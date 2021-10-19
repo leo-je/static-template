@@ -9,8 +9,18 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: '/setting/roles',
                 name: 'SettingRoles',
-                component: () => import('../components/HelloWorld.vue'),
-            }
+                component: () => import('../view/setting/roles.vue'),
+            },
+            {
+                path: '/setting/groups',
+                name: 'SettingGroups',
+                component: () => import('../view/setting/groups.vue'),
+            },
+            {
+                path: '/setting/users',
+                name: 'SettingUsers',
+                component: () => import('../view/setting/users.vue'),
+            },
         ]
     },
 ];

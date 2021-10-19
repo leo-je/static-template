@@ -14,21 +14,28 @@ const user = {
             state,
             commit,
             rootState
-        }, data) {
+        }, prama: Object): Object {
+            let _this = this;
             return new Promise((resolve, reject) => {
-                console.log("LoginByUsername")
-                if (sessionStorage.getItem("user")) resolve(JSON.parse(sessionStorage.getItem("user")));
-                else
-                http("post", "/api-user/busi/user/me", {}).then(data => {
-                    console.log("user store", data);
-                    this.state.user.user = data
-                    sessionStorage.setItem('user', JSON.stringify(this.state.user.user))
-                    resolve(data)
-                }).catch(function (e) {
-                    console.error(e);
-                    router.push("/401")
-                    reject(e)
-                });
+                console.log("LoginByUsername:" + prama)
+                if (sessionStorage.getItem("user")) {
+                    _this.state.user = JSON.parse(sessionStorage.getItem("user") || '')
+                    resolve(_this.state.user);
+                }
+                else {
+                    http("post", "/api-user/busi/user/me", null)
+                    .then(data => {
+                        console.log("user store", data);
+                        _this.state.user = Object.assign(_this.state.user, data)
+                        sessionStorage.setItem('user', JSON.stringify(_this.state.user.user))
+                        resolve(_this.state.user)
+                    }).catch(function (e) {
+                        console.error(e);
+                        router.push("/401")
+                        reject(e)
+                    });
+                }
+
             })
         }
     }

@@ -10,11 +10,6 @@
       </div>
     </a-layout-header>
     <a-layout-content style="padding: 0 0px">
-      <!-- <a-breadcrumb style="margin: 16px 0">
-        <a-breadcrumb-item>Home</a-breadcrumb-item>
-        <a-breadcrumb-item>List</a-breadcrumb-item>
-        <a-breadcrumb-item>App</a-breadcrumb-item>
-      </a-breadcrumb> -->
       <a-layout style="padding: 24px 0; background: #fff">
         <a-layout-sider width="200" style="background: #fff">
           <a-menu
@@ -23,20 +18,6 @@
             v-model:openKeys="openKeys"
             style="height: 100%"
           >
-            <a-sub-menu key="sub0">
-              <template #title>
-                <span><user-outlined />项目管理</span>
-              </template>
-              <a-menu-item key="1" @click="to('/setting/demand')"
-                >需求管理</a-menu-item
-              >
-              <a-menu-item key="2" @click="to('/setting/project')"
-                >项目维护</a-menu-item
-              >
-              <a-menu-item key="3" @click="to('/setting/program')"
-                >工程维护</a-menu-item
-              >
-            </a-sub-menu>
             <a-sub-menu key="sub1">
               <template #title>
                 <span><user-outlined />系统维护</span>
@@ -53,7 +34,7 @@
             </a-sub-menu>
           </a-menu>
         </a-layout-sider>
-        <a-layout-content :style="{ padding: '0 24px', minHeight: '630px' }">
+        <a-layout-content :style="{ padding: '0 24px', minHeight: '695px' }">
           <router-view />
         </a-layout-content>
       </a-layout>
@@ -93,12 +74,10 @@ export default defineComponent({
     let _this = this;
     this.$store
       .dispatch("LoginByUsername", {})
-      .then(() => {
+      .then((data) => {
+        console.log("user-data", data);
         console.log("user", this.user);
-        let user = sessionStorage.getItem("user")||'';
-        user = JSON.parse(user);
-        // this.user = JSON.parse(user)
-        this.user = Object.assign(this.user, user);
+        this.user = Object.assign(this.user, data);
         console.log("user", this.user);
       })
       .catch((e:Error) => {

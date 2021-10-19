@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import router from '../router';
 
 //创建axios的一个实例 
@@ -45,7 +45,7 @@ instance.interceptors.response.use(function (response) {
  * @param {Object} data    请求的参数
  * @returns {Promise}     返回一个promise对象，其实就相当于axios请求数据的返回值
  */
-export default function (method, url, data = null) {
+export default function (method: string, url: string, data:any = null): Promise<AxiosResponse<any>> {
     method = method.toLowerCase();
     if (method == 'post') {
         return instance.post(url, data)
