@@ -11,7 +11,7 @@ export interface RouterInfo {
 }
 let routerInfos: Array<RouterInfo> = []
 const routes: Array<RouteRecordRaw> = []
-await store.dispatch("LoadMenu",{}).then(data=>{
+await store.dispatch("LoadMenu",{id:"1"}).then(data=>{
     if(data){
         routerInfos = [Object.assign({},data)]
     }
