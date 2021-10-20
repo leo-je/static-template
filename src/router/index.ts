@@ -99,7 +99,7 @@ if (routerInfos) {
 }
 
 console.log(modules)
-console.log(routes)
+console.log("router ===============>",routes)
 
 
 const router = createRouter({
