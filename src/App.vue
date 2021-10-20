@@ -2,12 +2,16 @@
   <router-view />
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts">import { defineComponent } from "vue";
+
+export default defineComponent({
   name: 'App',
   components: {
+  },
+  beforeCreate() {
+    this.$router.push({ path: "/" });
   }
-}
+})
 </script>
 
 <style>

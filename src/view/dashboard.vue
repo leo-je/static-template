@@ -198,7 +198,7 @@ export default defineComponent({
       });
   },
   beforeCreate() {
-    this.$router.push({ path: "/" });
+    // this.$router.push({ path: "/" });
   },
 });
 </script>
