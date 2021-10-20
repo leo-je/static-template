@@ -95,7 +95,7 @@
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
 import http from "../../utils/http";
 import moment from "moment";
 // 表头配置

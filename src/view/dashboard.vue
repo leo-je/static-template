@@ -18,20 +18,116 @@
             v-model:openKeys="openKeys"
             style="height: 100%"
           >
-            <a-sub-menu key="sub1">
+            <!-- 1 -->
+            <template v-if="menus">
+              <template v-for="(subitem) in menus" :key="subitem.id">
+                  <a-menu-item
+                    v-if="!subitem.children"
+                    :key="subitem.id"
+                    @click="to(subitem.path)"
+                  >{{ subitem.name }}</a-menu-item>
+                  <a-sub-menu v-else>
+                    <template #title>
+                      <span>
+                        <user-outlined />
+                        {{ subitem.name }}
+                      </span>
+                    </template>
+                    <!-- 3 -->
+                    <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
+                      <a-menu-item
+                        v-if="!subitem3.children"
+                        key="{{subitem3.id}}"
+                        @click="to(subitem3.path)"
+                      >{{ subitem3.name }}</a-menu-item>
+                      <a-sub-menu v-else>
+                        <template #title>
+                          <span>
+                            <user-outlined />
+                            {{ subitem3.name }}
+                          </span>
+                        </template>
+                        <a-menu-item
+                          v-for="(subitem4) in subitem3.children"
+                          v-bind:key="subitem4.id"
+                          @click="to(subitem4.path)"
+                        >{{ subitem4.name }}</a-menu-item>
+                      </a-sub-menu>
+                    </template>
+                  </a-sub-menu>
+                </template>
+            </template>
+            <!-- <a-sub-menu v-for="(item) in menus" :key="item.id">
               <template #title>
-                <span><user-outlined />系统维护</span>
+                <span>
+                   <component :is="'UserOutlined'" /> 
+                  <IconFont v-if="item.iconName" :type="item.iconName" />
+                  {{ item.name }}
+                </span>
               </template>
-              <a-menu-item key="roles" @click="to('/setting/roles')"
-                >角色维护</a-menu-item
-              >
-              <a-menu-item key="4" @click="to('/setting/users')"
-                >用户管理</a-menu-item
-              >
-              <a-menu-item key="5" @click="to('/setting/groups')"
-                >用户组管理</a-menu-item
-              >
-            </a-sub-menu>
+               
+              <template v-if="item.children">
+                <template v-for="(subitem) in item.children" :key="subitem.id">
+                  <a-menu-item
+                    v-if="!subitem.children"
+                    :key="subitem.id"
+                    @click="to(subitem.path)"
+                  >{{ subitem.name }}</a-menu-item>
+                  <a-sub-menu v-else>
+                    <template #title>
+                      <span>
+                        <user-outlined />
+                        {{ subitem.name }}
+                      </span>
+                    </template>
+                     3 
+                    <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
+                      <a-menu-item
+                        v-if="!subitem3.children"
+                        key="{{subitem3.id}}"
+                        @click="to(subitem3.path)"
+                      >{{ subitem3.name }}</a-menu-item>
+                      <a-sub-menu v-else>
+                        <template #title>
+                          <span>
+                            <user-outlined />
+                            {{ subitem3.name }}
+                          </span>
+                        </template>
+                        <a-menu-item
+                          v-for="(subitem4) in subitem3.children"
+                          v-bind:key="subitem4.id"
+                          @click="to(subitem4.path)"
+                        >{{ subitem4.name }}</a-menu-item>
+                      </a-sub-menu>
+                    </template>
+                  </a-sub-menu>
+                </template>
+              </template>
+            </a-sub-menu> -->
+
+            <!-- <a-sub-menu key="sub1">
+              <template #title>
+                <span>
+                  <user-outlined />系统维护
+                </span>
+              </template>
+              <a-menu-item key="roles" @click="to('/setting/roles')">角色维护</a-menu-item>
+              <a-menu-item key="4" @click="to('/setting/users')">用户管理</a-menu-item>
+              <a-menu-item key="5" @click="to('/setting/groups')">用户组管理</a-menu-item>
+              <a-sub-menu key="sub1-2">
+                <template #title>
+                  <span>
+                    <user-outlined />系统维护2
+                  </span>
+                </template>
+                <a-menu-item key="roles2" @click="to('/setting/roles')">角色维护</a-menu-item>
+                <a-menu-item key="42" @click="to('/setting/users')">用户管理</a-menu-item>
+                <a-menu-item key="52" @click="to('/setting/groups')">用户组管理</a-menu-item>
+                <a-menu-item key="52" @click="to('/setting/menu')">菜单管理</a-menu-item>
+              </a-sub-menu>
+              <a-menu-item key="5" @click="to('/setting/menu')">菜单管理</a-menu-item>
+            </a-sub-menu>-->
           </a-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '695px' }">
@@ -39,9 +135,7 @@
         </a-layout-content>
       </a-layout>
     </a-layout-content>
-    <a-layout-footer style="text-align: center">
-      Ant Design ©2018 Created by Ant UED
-    </a-layout-footer>
+    <a-layout-footer style="text-align: center">Ant Design ©2018 Created by Ant UED</a-layout-footer>
   </a-layout>
 </template>
 
@@ -49,26 +143,35 @@
 import { defineComponent, computed, ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { UserOutlined } from "@ant-design/icons-vue";
+import { createFromIconfontCN } from '@ant-design/icons-vue';
+import store from '../store';
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
+});
+interface Menu { id: string, name: string, children?: Menu[], path: string, iconName: string, }
 
 export default defineComponent({
   setup() {
     return {
-      loading:false,
+      loading: false,
       selectedKeys1: ["2"],
       selectedKeys2: ["1"],
       openKeys: ["sub1"],
       user: ref({
         nickName: "xxx",
       }),
+      menus: ref<Menu[]>([])
     };
   },
   components: {
     UserOutlined,
+    IconFont
   },
   methods: {
     to(path: string) {
       this.$router.push({ path });
-    },
+    }
   },
   mounted() {
     let _this = this;
@@ -79,15 +182,23 @@ export default defineComponent({
         console.log("user", this.user);
         this.user = Object.assign(this.user, data);
         console.log("user", this.user);
+        return _this.$store.dispatch("LoadMenu", {});
+      }).then((data: any) => {
+        console.log("======================>", data)
+        if (data) {
+          let menus = data.children
+          console.log("======================>", menus)
+          _this.menus = (menus);
+        }
       })
-      .catch((e:Error) => {
+      .catch((e: Error) => {
         console.error("dash", e);
         message.error(e.message);
         this.loading = false;
       });
   },
   beforeCreate() {
-    this.$router.push({ path: "/setting/roles" });
+    this.$router.push({ path: "/" });
   },
 });
 </script>
