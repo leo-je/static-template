@@ -1,5 +1,5 @@
 /* jshint esversion: 6 */
-import router from "../../router";
+import { getRouter } from "../../router";
 import http from "../../utils/http";
 
 export interface userInfo {
@@ -26,7 +26,7 @@ const user = {
                         context.state.user = JSON.parse(sessionUser)
                         resolve(context.state.user);
                     } else {
-                        http("post", "/api-user/busi/user/me", null)
+                        http("post", "../api-user/busi/user/me", null)
                             .then(data => {
                                 console.log("user store", data);
                                 context.state.user = Object.assign(context.state.user, data)
@@ -34,7 +34,7 @@ const user = {
                                 resolve(context.state.user)
                             }).catch(function (e) {
                                 console.error(e);
-                                router.push("/401")
+                                getRouter().push("/401")
                                 reject(e)
                             });
                     }

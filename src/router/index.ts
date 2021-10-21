@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHistory, Router, RouteRecordRaw } from "vue-router";
 import store from '../store'
-const modules = import.meta.globEager('../view/**/*.vue')
+const modules = import.meta.glob('../view/**/*.vue')
 
 
 export interface RouterInfo {
@@ -11,12 +11,19 @@ export interface RouterInfo {
 }
 let routerInfos: Array<RouterInfo> = []
 const routes: Array<RouteRecordRaw> = []
-await store.dispatch("LoadMenu",{id:"1"}).then(data=>{
-    if(data){
-        routerInfos = [Object.assign({},data)]
-    }
-})
 
+// let dd: any = await store.dispatch("LoadMenu", { id: "1" }).then(data => {
+//     if (data) {
+//         // routerInfos = [Object.assign({},data)]
+//         return data;
+//     }
+//     return null;
+// })
+
+// console.log("=================>", dd)
+// if (dd) {
+//     routerInfos = [Object.assign({}, dd)];
+// }
 // const routerInfos: Array<RouterInfo> = [
 //     {
 //         path: '/',
@@ -49,40 +56,46 @@ await store.dispatch("LoadMenu",{id:"1"}).then(data=>{
 // ]
 
 // const routes: Array<RouteRecordRaw> = [
-    // {
-    //     path: '/',
-    //     name: 'Home',
-    //     component: () => import('../view/dashboard.vue'),
-    //     children: [
-    //         {
-    //             path: '/setting/roles',
-    //             name: 'SettingRoles',
-    //             component: () => import('../view/setting/roles.vue'),
-    //         },
-    //         {
-    //             path: '/setting/groups',
-    //             name: 'SettingGroups',
-    //             component: () => import('../view/setting/groups.vue'),
-    //         },
-    //         {
-    //             path: '/setting/users',
-    //             name: 'SettingUsers',
-    //             component: () => import('../view/setting/users.vue'),
-    //         },
-    //     ]
-    // },
+// {
+//     path: '/',
+//     name: 'Home',
+//     component: () => import('../view/dashboard.vue'),
+//     children: [
+//         {
+//             path: '/setting/roles',
+//             name: 'SettingRoles',
+//             component: () => import('../view/setting/roles.vue'),
+//         },
+//         {
+//             path: '/setting/groups',
+//             name: 'SettingGroups',
+//             component: () => import('../view/setting/groups.vue'),
+//         },
+//         {
+//             path: '/setting/users',
+//             name: 'SettingUsers',
+//             component: () => import('../view/setting/users.vue'),
+//         },
+//     ]
+// },
 // ];
 
 const getRow = (routerInfo: RouterInfo): RouteRecordRaw => {
     console.log(routerInfo)
+    let view = modules[routerInfo.componentPath ? routerInfo.componentPath : "../view/setting.vue"]
+    console.log("=====================>", view)
     const row: RouteRecordRaw = {
         path: routerInfo.path,
         name: routerInfo.name,
-        component: () => import(/* @vite-ignore */routerInfo.componentPath?routerInfo.componentPath:"../view/setting.vue"),
+        component: view
+        // () => {
+        //     //import(routerInfo.componentPath ? routerInfo.componentPath : "../view/setting.vue")
+        //     return modules[routerInfo.componentPath ? routerInfo.componentPath : "../view/setting.vue"]
+        // },
     }
     console.log(routerInfo.children)
-    if (routerInfo.children!=null && routerInfo.children.length > 0) {
-        const ch:RouteRecordRaw[]=[]
+    if (routerInfo.children != null && routerInfo.children.length > 0) {
+        const ch: RouteRecordRaw[] = []
         routerInfo.children.forEach(c => {
             ch.push(getRow(c))
         })
@@ -93,18 +106,39 @@ const getRow = (routerInfo: RouterInfo): RouteRecordRaw => {
 
 if (routerInfos) {
     routerInfos.forEach(routerInfo => {
+        if (!routerInfo.componentPath) return;
         const row = getRow(routerInfo)
         routes.push(row)
     })
 }
 
 console.log(modules)
-console.log("router ===============>",routes)
+console.log("router ===============>", routes)
 
 
-const router = createRouter({
-    history: createWebHistory(),
-    routes,
-});
+// const router = createRouter({
+//     history: createWebHistory(),
+//     routes,
+// });
 
-export default router;
+// export default router;
+let router: Router
+export function setRouter(data: any) {
+    let routerInfos = [Object.assign({}, data)];
+    if (routerInfos) {
+        routerInfos.forEach(routerInfo => {
+            const row = getRow(routerInfo)
+            routes.push(row)
+        })
+    }
+    router = createRouter({
+        history: createWebHistory(),
+        routes,
+    });
+
+    return router
+}
+
+export function getRouter(): Router {
+    return router
+}

@@ -88,6 +88,11 @@ const columns = [
     slots: { customRender: "name" },
   },
   {
+    title: "路径",
+    dataIndex: "path",
+    slots: { customRender: "path" },
+  },
+    {
     title: "排序",
     dataIndex: "sort",
     slots: { customRender: "sort" },

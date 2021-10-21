@@ -12,7 +12,7 @@ const menu = {
                 if (context.state.menu) {
                     resolve(context.state.menu);
                 } else {
-                    http("get", "/api-user/busi/menu/valid/tree",prama)
+                    http("get", "../api-user/busi/menu/valid/tree",prama)
                         .then(data => {
                             console.log("menu store", data);
                             context.state.menu = Object.assign({}, data)
@@ -22,7 +22,6 @@ const menu = {
                             reject(e)
                         });
                 }
-
             })
         }
     }

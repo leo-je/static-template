@@ -21,41 +21,41 @@
             <!-- 1 -->
             <template v-if="menus">
               <template v-for="(subitem) in menus" :key="subitem.id">
-                  <a-menu-item
-                    v-if="!subitem.children"
-                    :key="subitem.id"
-                    @click="to(subitem.path)"
-                  >{{ subitem.name }}</a-menu-item>
-                  <a-sub-menu v-else>
-                    <template #title>
-                      <span>
-                        <user-outlined />
-                        {{ subitem.name }}
-                      </span>
-                    </template>
-                    <!-- 3 -->
-                    <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
+                <a-menu-item
+                  v-if="!subitem.children"
+                  :key="subitem.id"
+                  @click="to(subitem.path)"
+                >{{ subitem.name }}</a-menu-item>
+                <a-sub-menu v-else>
+                  <template #title>
+                    <span>
+                      <user-outlined />
+                      {{ subitem.name }}
+                    </span>
+                  </template>
+                  <!-- 3 -->
+                  <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
+                    <a-menu-item
+                      v-if="!subitem3.children"
+                      :key="subitem3.id"
+                      @click="to(subitem3.path)"
+                    >{{ subitem3.name }}</a-menu-item>
+                    <a-sub-menu v-else>
+                      <template #title>
+                        <span>
+                          <user-outlined />
+                          {{ subitem3.name }}
+                        </span>
+                      </template>
                       <a-menu-item
-                        v-if="!subitem3.children"
-                        key="{{subitem3.id}}"
-                        @click="to(subitem3.path)"
-                      >{{ subitem3.name }}</a-menu-item>
-                      <a-sub-menu v-else>
-                        <template #title>
-                          <span>
-                            <user-outlined />
-                            {{ subitem3.name }}
-                          </span>
-                        </template>
-                        <a-menu-item
-                          v-for="(subitem4) in subitem3.children"
-                          v-bind:key="subitem4.id"
-                          @click="to(subitem4.path)"
-                        >{{ subitem4.name }}</a-menu-item>
-                      </a-sub-menu>
-                    </template>
-                  </a-sub-menu>
-                </template>
+                        v-for="(subitem4) in subitem3.children"
+                        :key="subitem4.id"
+                        @click="to(subitem4.path)"
+                      >{{ subitem4.name }}</a-menu-item>
+                    </a-sub-menu>
+                  </template>
+                </a-sub-menu>
+              </template>
             </template>
             <!-- <a-sub-menu v-for="(item) in menus" :key="item.id">
               <template #title>
@@ -104,7 +104,7 @@
                   </a-sub-menu>
                 </template>
               </template>
-            </a-sub-menu> -->
+            </a-sub-menu>-->
 
             <!-- <a-sub-menu key="sub1">
               <template #title>
@@ -175,14 +175,11 @@ export default defineComponent({
   },
   mounted() {
     let _this = this;
-    this.$store
+    store
       .dispatch("LoginByUsername", {})
       .then((data) => {
-        console.log("user-data", data);
-        console.log("user", this.user);
         this.user = Object.assign(this.user, data);
-        console.log("user", this.user);
-        return _this.$store.dispatch("LoadMenu", {});
+        return store.dispatch("LoadMenu", { id: "1" });
       }).then((data: any) => {
         console.log("======================>", data)
         if (data) {
