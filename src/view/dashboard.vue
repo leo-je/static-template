@@ -18,45 +18,48 @@
             v-model:openKeys="openKeys"
             style="height: 100%"
           >
-            <!-- 1 -->
-            <template v-if="menus">
+            <Menu v-if="menus.length > 0" :menus="menus"></Menu>
+            <!-- <template v-if="menus">
               <template v-for="(subitem) in menus" :key="subitem.id">
-                <a-menu-item
-                  v-if="!subitem.children"
-                  :key="subitem.id"
-                  @click="to(subitem.path)"
-                >{{ subitem.name }}</a-menu-item>
-                <a-sub-menu v-else>
-                  <template #title>
-                    <span>
-                      <user-outlined />
-                      {{ subitem.name }}
-                    </span>
-                  </template>
-                  <!-- 3 -->
-                  <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
-                    <a-menu-item
-                      v-if="!subitem3.children"
-                      :key="subitem3.id"
-                      @click="to(subitem3.path)"
-                    >{{ subitem3.name }}</a-menu-item>
-                    <a-sub-menu v-else>
-                      <template #title>
-                        <span>
-                          <user-outlined />
-                          {{ subitem3.name }}
-                        </span>
-                      </template>
+                <template v-if="subitem.type !== '2'">
+                  <a-menu-item
+                    v-if="!subitem.children"
+                    :key="subitem.id"
+                    @click="to(subitem.path)"
+                  >{{ subitem.name }}</a-menu-item>
+                  <a-sub-menu v-else>
+                    <template #title>
+                      <span>
+                        <user-outlined />
+                        {{ subitem.name }}
+                      </span>
+                    </template>
+                    
+                    <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
                       <a-menu-item
-                        v-for="(subitem4) in subitem3.children"
-                        :key="subitem4.id"
-                        @click="to(subitem4.path)"
-                      >{{ subitem4.name }}</a-menu-item>
-                    </a-sub-menu>
-                  </template>
-                </a-sub-menu>
+                        v-if="!subitem3.children"
+                        :key="subitem3.id"
+                        @click="to(subitem3.path)"
+                      >{{ subitem3.name }}</a-menu-item>
+                      <a-sub-menu v-else>
+                        <template #title>
+                          <span>
+                            <user-outlined />
+                            {{ subitem3.name }}
+                          </span>
+                        </template>
+                        <template v-for="(subitem4) in subitem3.children" :key="subitem4.id">
+                          <a-menu-item
+                            v-if="subitem4.type !== '2'"
+                            @click="to(subitem4.path)"
+                          >{{ subitem4.name }}</a-menu-item>
+                        </template>
+                      </a-sub-menu>
+                    </template>
+                  </a-sub-menu>
+                </template>
               </template>
-            </template>
+            </template>-->
             <!-- <a-sub-menu v-for="(item) in menus" :key="item.id">
               <template #title>
                 <span>
@@ -144,12 +147,13 @@ import { defineComponent, computed, ref } from 'vue';
 import { message } from 'ant-design-vue';
 import { UserOutlined } from "@ant-design/icons-vue";
 import { createFromIconfontCN } from '@ant-design/icons-vue';
+import Menu from '../components/Menu';
 import store from '../store';
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
 });
-interface Menu { id: string, name: string, children?: Menu[], path: string, iconName: string, }
+interface Menu { id: string, name: string, children?: Menu[], path: string, iconName: string, type: string }
 
 export default defineComponent({
   setup() {
@@ -166,7 +170,8 @@ export default defineComponent({
   },
   components: {
     UserOutlined,
-    IconFont
+    IconFont,
+    Menu,
   },
   methods: {
     to(path: string) {

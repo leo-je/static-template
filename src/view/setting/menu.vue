@@ -68,6 +68,14 @@
             <a-input placeholder="菜单排序值" v-model:value="form.sort" />
           </a-form-item>
 
+          <a-form-item label="类型">
+            <a-radio-group v-model:value="form.type">
+              <a-radio-button value="1">显示</a-radio-button>
+              <a-radio-button value="2">隐藏</a-radio-button>
+              <a-radio-button value="3">连接</a-radio-button>
+            </a-radio-group>
+          </a-form-item>
+
           <a-form-item label="状态">
             <a-switch v-model:checked="form.statusChecked" />
           </a-form-item>
@@ -92,7 +100,7 @@ const columns = [
     dataIndex: "path",
     slots: { customRender: "path" },
   },
-    {
+  {
     title: "排序",
     dataIndex: "sort",
     slots: { customRender: "sort" },
@@ -119,7 +127,8 @@ interface MenuInfo {
   pId: string,
   status: string,
   iconName: string,
-  sort: number
+  sort: number,
+  type: string
 }
 
 export default defineComponent({

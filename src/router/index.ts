@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, Router, RouteRecordRaw } from "vue-router";
 import store from '../store'
-const modules = import.meta.glob('../view/**/*.vue')
+const modules = import.meta.glob('../**/*.vue')
 
 
 export interface RouterInfo {

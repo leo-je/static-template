@@ -32,7 +32,8 @@ instance.interceptors.response.use(function (response) {
         // })
         // location.reload()
         sessionStorage.removeItem("user")
-        getRouter().push({ path: "/401" });
+        let router = getRouter();
+        router.push({ path: "/401" });
     }
     console.log('响应拦截器报错');
     return Promise.reject(error);
