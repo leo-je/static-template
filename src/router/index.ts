@@ -53,7 +53,7 @@ const routerInfos: Array<RouterInfo> = [
 
 const getRow = (routerInfo: RouterInfo): RouteRecordRaw => {
     console.log(routerInfo)
-    let view = modules[routerInfo.componentPath ? routerInfo.componentPath : "../view/setting.vue"]
+    let view = modules[routerInfo.componentPath ? routerInfo.componentPath : "../view/commonView.vue"]
     console.log("=====================>", view)
     const row: RouteRecordRaw = {
         path: routerInfo.path ? routerInfo.path : "",
