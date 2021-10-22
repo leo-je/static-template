@@ -130,10 +130,6 @@ const columns = [
     dataIndex: "status",
     slots: { customRender: "status" },
   },
-  //   {
-  //     title: "Address",
-  //     dataIndex: "address",
-  //   },
   {
     title: "Action",
     key: "action",
