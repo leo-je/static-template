@@ -96,7 +96,7 @@ export default defineComponent({
   setup() {
     return {
       wtitle: ref("添加"),
-      data: ref<Array<RoleInfo> | null>([Object.create(null)]),
+      data: ref<Array<RoleInfo>>([Object.create(null)]),
       columns,
       addEditVisible: ref(false),
       confirmLoading: ref(false),
