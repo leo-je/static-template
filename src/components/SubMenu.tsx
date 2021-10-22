@@ -1,13 +1,16 @@
 import { defineComponent } from "vue";
 import { getRouter } from "../router";
+import { SubMenu, MenuItem } from "ant-design-vue";
+
 export default defineComponent({
-  name: 'Menu',
+  name: 'subMenu',
   props: {
     menus: Array,
   },
-  // setup(props) {
-  //   return props
-  // },
+  components: {
+    ASubMenu: SubMenu,
+    AMenuItem: MenuItem
+  },
   setup(props) {
     const getMenu = (menus: any) => {
       return menus.map((item: any) => {

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 const { resolve } = require('path')
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import viteCompression from 'vite-plugin-compression';
 
 // const _resolve = (dir) =>  path.resolve(__dirname, dir);
 // https://vitejs.dev/config/
@@ -10,7 +11,7 @@ export default defineConfig({
     jsxFactory: 'h',
     jsxFragment: 'Fragment'
   },
-  plugins: [vue(), vueJsx()],
+  plugins: [vue(), vueJsx(),viteCompression()],
   server: {
     proxy: {
       //这里是通过请求/api 来转发到 https://api.pingping6.com/

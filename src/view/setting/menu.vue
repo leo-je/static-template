@@ -85,9 +85,11 @@
   </section>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref } from "vue";
 import http from "../../utils/http";
+import { Input, Divider, Button, Row, DirectoryTree, Table, Col, Form, FormItem, Modal, Switch, RadioButton, RadioGroup, ConfigProvider } from "ant-design-vue";
 import moment from "moment";
+import { RouterInfo } from "../../interface";
 // 表头配置
 const columns = [
   {
@@ -118,21 +120,24 @@ const columns = [
   },
 ];
 
-interface MenuInfo {
-  id: string,
-  name: string,
-  path: string,
-  componentPath: string,
-  statusChecked: true,
-  pId: string,
-  status: string,
-  iconName: string,
-  sort: number,
-  type: string
-}
-
 export default defineComponent({
   name: "SettingMenu",
+  components: {
+    AInput: Input,
+    ADivider: Divider,
+    AButton: Button,
+    ARow: Row,
+    ADirectoryTree: DirectoryTree,
+    ATable: Table,
+    ACol: Col,
+    AForm: Form,
+    AFormItem: FormItem,
+    AModal: Modal,
+    ASwitch: Switch,
+    ARadioButton: RadioButton,
+    ARadioGroup: RadioGroup,
+    AConfigProvider: ConfigProvider
+  },
   setup() {
     const selectedKeys: Array<string> = [];
     // watch(selectedKeys, () => {
@@ -152,7 +157,7 @@ export default defineComponent({
         title: "name",
         key: "id",
       }),
-      form: ref<MenuInfo>(Object.create(null)),
+      form: ref<RouterInfo>(Object.create(null)),
     };
   },
   mounted() {

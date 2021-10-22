@@ -18,119 +18,7 @@
             v-model:openKeys="openKeys"
             style="height: 100%"
           >
-            <Menu v-if="menus.length > 0" :menus="menus"></Menu>
-            <!-- <template v-if="menus">
-              <template v-for="(subitem) in menus" :key="subitem.id">
-                <template v-if="subitem.type !== '2'">
-                  <a-menu-item
-                    v-if="!subitem.children"
-                    :key="subitem.id"
-                    @click="to(subitem.path)"
-                  >{{ subitem.name }}</a-menu-item>
-                  <a-sub-menu v-else>
-                    <template #title>
-                      <span>
-                        <user-outlined />
-                        {{ subitem.name }}
-                      </span>
-                    </template>
-                    
-                    <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
-                      <a-menu-item
-                        v-if="!subitem3.children"
-                        :key="subitem3.id"
-                        @click="to(subitem3.path)"
-                      >{{ subitem3.name }}</a-menu-item>
-                      <a-sub-menu v-else>
-                        <template #title>
-                          <span>
-                            <user-outlined />
-                            {{ subitem3.name }}
-                          </span>
-                        </template>
-                        <template v-for="(subitem4) in subitem3.children" :key="subitem4.id">
-                          <a-menu-item
-                            v-if="subitem4.type !== '2'"
-                            @click="to(subitem4.path)"
-                          >{{ subitem4.name }}</a-menu-item>
-                        </template>
-                      </a-sub-menu>
-                    </template>
-                  </a-sub-menu>
-                </template>
-              </template>
-            </template>-->
-            <!-- <a-sub-menu v-for="(item) in menus" :key="item.id">
-              <template #title>
-                <span>
-                   <component :is="'UserOutlined'" /> 
-                  <IconFont v-if="item.iconName" :type="item.iconName" />
-                  {{ item.name }}
-                </span>
-              </template>
-               
-              <template v-if="item.children">
-                <template v-for="(subitem) in item.children" :key="subitem.id">
-                  <a-menu-item
-                    v-if="!subitem.children"
-                    :key="subitem.id"
-                    @click="to(subitem.path)"
-                  >{{ subitem.name }}</a-menu-item>
-                  <a-sub-menu v-else>
-                    <template #title>
-                      <span>
-                        <user-outlined />
-                        {{ subitem.name }}
-                      </span>
-                    </template>
-                     3 
-                    <template v-for="(subitem3) in subitem.children" v-bind:key="subitem3.id">
-                      <a-menu-item
-                        v-if="!subitem3.children"
-                        key="{{subitem3.id}}"
-                        @click="to(subitem3.path)"
-                      >{{ subitem3.name }}</a-menu-item>
-                      <a-sub-menu v-else>
-                        <template #title>
-                          <span>
-                            <user-outlined />
-                            {{ subitem3.name }}
-                          </span>
-                        </template>
-                        <a-menu-item
-                          v-for="(subitem4) in subitem3.children"
-                          v-bind:key="subitem4.id"
-                          @click="to(subitem4.path)"
-                        >{{ subitem4.name }}</a-menu-item>
-                      </a-sub-menu>
-                    </template>
-                  </a-sub-menu>
-                </template>
-              </template>
-            </a-sub-menu>-->
-
-            <!-- <a-sub-menu key="sub1">
-              <template #title>
-                <span>
-                  <user-outlined />系统维护
-                </span>
-              </template>
-              <a-menu-item key="roles" @click="to('/setting/roles')">角色维护</a-menu-item>
-              <a-menu-item key="4" @click="to('/setting/users')">用户管理</a-menu-item>
-              <a-menu-item key="5" @click="to('/setting/groups')">用户组管理</a-menu-item>
-              <a-sub-menu key="sub1-2">
-                <template #title>
-                  <span>
-                    <user-outlined />系统维护2
-                  </span>
-                </template>
-                <a-menu-item key="roles2" @click="to('/setting/roles')">角色维护</a-menu-item>
-                <a-menu-item key="42" @click="to('/setting/users')">用户管理</a-menu-item>
-                <a-menu-item key="52" @click="to('/setting/groups')">用户组管理</a-menu-item>
-                <a-menu-item key="52" @click="to('/setting/menu')">菜单管理</a-menu-item>
-              </a-sub-menu>
-              <a-menu-item key="5" @click="to('/setting/menu')">菜单管理</a-menu-item>
-            </a-sub-menu>-->
+            <SubMenu v-if="menus.length > 0" :menus="menus"></SubMenu>
           </a-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '695px' }">
@@ -143,11 +31,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { message } from 'ant-design-vue';
-import { UserOutlined } from "@ant-design/icons-vue";
-import { createFromIconfontCN } from '@ant-design/icons-vue';
-import Menu from '../components/Menu';
+import { defineComponent, ref } from 'vue';
+import { message, Layout, LayoutHeader, LayoutFooter, LayoutContent, Menu, LayoutSider } from 'ant-design-vue';
+import { UserOutlined, createFromIconfontCN } from "@ant-design/icons-vue";
+import SubMenu from '../components/SubMenu';
 import store from '../store';
 import { RouterInfo } from '../interface';
 
@@ -172,7 +59,13 @@ export default defineComponent({
   components: {
     UserOutlined,
     IconFont,
-    Menu,
+    SubMenu,
+    ALayout: Layout,
+    ALayoutHeader: LayoutHeader,
+    ALayoutFooter: LayoutFooter,
+    ALayoutContent: LayoutContent,
+    AMenu: Menu,
+    ALayoutSider: LayoutSider,
   },
   methods: {
     to(path: string) {

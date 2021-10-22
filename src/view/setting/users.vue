@@ -94,7 +94,9 @@
 <script lang="ts">
 import http from "../../utils/http";
 import moment from "moment";
+import { Row, Select, Input, Table, Col, Form, Modal, FormItem, TreeSelect, DatePicker, RadioButton, RadioGroup, Divider, Button, ConfigProvider } from "ant-design-vue";
 import { defineComponent, ref } from "vue";
+import { MainRoleGroupOptions, mainRoleOptions, UserInfo } from "../../interface";
 // 表头配置
 const columns = [
   {
@@ -139,47 +141,34 @@ const columns = [
   },
 ];
 
-interface UserInfo {
-  id: string,
-  name: string,
-  nickName: string,
-  username: string,
-  statusChecked: boolean,
-  mainRole: MainRole,
-  sex:string,
-  birthday: any
-}
-
-interface MainRole {
-  roleId: string,
-  groupId: string,
-}
-
-interface MainRoleGroupOptions {
-  roles?: any,
-  replaceFields: ReplaceFields,
-  data?: any,
-}
-
-interface ReplaceFields {
-  title: string,
-  key: string,
-}
-
 export default defineComponent({
   name: "SettingRoles",
+  components: {
+    ARow: Row,
+    ASelect: Select,
+    AInput: Input,
+    ATable: Table,
+    ACol: Col,
+    AForm: Form,
+    AModal: Modal,
+    AFormItem: FormItem,
+    ATreeSelect: TreeSelect,
+    ADatePicker: DatePicker,
+    ARadioButton: RadioButton,
+    ARadioGroup: RadioGroup,
+    ADivider: Divider,
+    AButton: Button,
+    AConfigProvider: ConfigProvider,
+  },
   setup() {
     return {
       wtitle: "添加",
       data: ref([]),
       columns,
-      addEditVisible: false,
-      confirmLoading: false,
+      addEditVisible: ref(false),
+      confirmLoading: ref(false),
       user: ref<UserInfo>(Object.create(null)),
-      mainRoleOptions: {
-        roles: null,
-        data: null,
-      },
+      mainRoleOptions: ref<mainRoleOptions>(Object.create(null)),
       mainRoleGroupOptions: ref<MainRoleGroupOptions>({
         replaceFields: {
           title: "name",
@@ -282,16 +271,9 @@ export default defineComponent({
         });
     },
     addProjet() {
-      this.showWindows("添加用户", {
-        mainRole: {
-          id: "",
-          group: {
-            id: "",
-          },
-        },
-      });
+      this.showWindows("添加用户", { mainRole: { roleId: "", groupId: "" } });
     },
-    showWindows: function (title: string, row: any) {
+    showWindows: function (title: string, row: UserInfo) {
       console.log(row);
       this.user = row;
       this.wtitle = title;
