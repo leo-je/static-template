@@ -7,7 +7,7 @@ import 'ant-design-vue/dist/antd.css';
 import http from './utils/http';
 
 
-http("get", "/api-user/busi/menu/valid/tree", { id: "1" })
+http("get", "/api-user/busi/menu/valid/tree", { id: "0" })
     .then(data => {
         createApp(App)
             .use(setRouter(data))

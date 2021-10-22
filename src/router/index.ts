@@ -1,14 +1,15 @@
 import { createRouter, createWebHistory, Router, RouteRecordRaw } from "vue-router";
+import { RouterInfo } from "../interface";
 import store from '../store'
 const modules = import.meta.glob('../**/*.vue')
 
 
-export interface RouterInfo {
-    path: string,
-    name: string,
-    componentPath: string,
-    children?: Array<RouterInfo>
-}
+// export interface RouterInfo {
+//     path: string,
+//     name: string,
+//     componentPath: string,
+//     children?: Array<RouterInfo>
+// }
 let routerInfos: Array<RouterInfo> = []
 const routes: Array<RouteRecordRaw> = []
 
@@ -123,10 +124,10 @@ console.log("router ===============>", routes)
 
 // export default router;
 let router: Router
-export function setRouter(data: any) {
-    let routerInfos = [Object.assign({}, data)];
+export function setRouter(data: RouterInfo) {
+    let routerInfos = data.children;
     if (routerInfos) {
-        routerInfos.forEach(routerInfo => {
+        routerInfos.forEach((routerInfo) => {
             const row = getRow(routerInfo)
             routes.push(row)
         })

@@ -149,11 +149,12 @@ import { UserOutlined } from "@ant-design/icons-vue";
 import { createFromIconfontCN } from '@ant-design/icons-vue';
 import Menu from '../components/Menu';
 import store from '../store';
+import { RouterInfo } from '../interface';
+
 
 const IconFont = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
 });
-interface Menu { id: string, name: string, children?: Menu[], path: string, iconName: string, type: string }
 
 export default defineComponent({
   setup() {
@@ -165,7 +166,7 @@ export default defineComponent({
       user: ref({
         nickName: "xxx",
       }),
-      menus: ref<Menu[]>([])
+      menus: ref<RouterInfo[]>([])
     };
   },
   components: {
