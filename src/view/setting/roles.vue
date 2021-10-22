@@ -2,7 +2,7 @@
   <section>
     <div class="add-button">
       <a-config-provider :auto-insert-space-in-button="false">
-        <a-button type="primary" @click="addProjet"> 添加 </a-button>
+        <a-button type="primary" @click="addProjet">添加</a-button>
       </a-config-provider>
     </div>
     <a-table :columns="columns" :data-source="data" bordered rowKey="id">
@@ -24,11 +24,11 @@
       </template>
       <!-- <template #title="">
       Header
-    </template> -->
+      </template>-->
 
       <!-- <template #footer="">
       Footer
-    </template> -->
+      </template>-->
     </a-table>
 
     <!-- 对话框 -->
@@ -39,16 +39,9 @@
         :confirm-loading="confirmLoading"
         @ok="handleOk"
       >
-        <a-form
-          :model="roleInfo"
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
-        >
+        <a-form :model="roleInfo">
           <a-form-item label="角色名称">
-            <a-input
-              placeholder="请输入角色名称"
-              v-model:value="roleInfo.name"
-            />
+            <a-input placeholder="请输入角色名称" v-model:value="roleInfo.name" />
           </a-form-item>
           <a-form-item label="角色状态">
             <a-switch v-model:checked="roleInfo.statusChecked" />
@@ -58,7 +51,10 @@
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
+import { Button, ConfigProvider, Table, Form, Modal, Switch, FormItem, Divider, Input } from 'ant-design-vue';
+import { RoleInfo } from '../../interface';
 import http from "../../utils/http";
 
 // 表头配置
@@ -84,20 +80,27 @@ const columns = [
     slots: { customRender: "action" },
   },
 ];
-export default {
+export default defineComponent({
   name: "SettingRoles",
-  data() {
+  components: {
+    AButton: Button,
+    AConfigProvider: ConfigProvider,
+    ATable: Table,
+    AForm: Form,
+    AModal: Modal,
+    ASwitch: Switch,
+    AFormItem: FormItem,
+    ADivider: Divider,
+    AInput: Input
+  },
+  setup() {
     return {
-      wtitle: "添加",
-      data: [],
+      wtitle: ref("添加"),
+      data: ref<Array<RoleInfo> | null>([Object.create(null)]),
       columns,
-      addEditVisible: false,
-      confirmLoading: false,
-      roleInfo: {
-        id: "",
-        name: "",
-        statusChecked: true,
-      },
+      addEditVisible: ref(false),
+      confirmLoading: ref(false),
+      roleInfo: ref<RoleInfo>(Object.create(null)),
     };
   },
   mounted() {
@@ -107,7 +110,7 @@ export default {
     getList() {
       var _this = this;
       http("post", "/api-user/busi/roles/all/list")
-        .then(function (data) {
+        .then(function (data: RoleInfo[]) {
           console.log(data);
           if (data != null && data.length > 0) {
             _this.data = data;
@@ -117,7 +120,7 @@ export default {
           console.error(e);
         });
     },
-    deleteProject: function (id) {
+    deleteProject: function (id: string) {
       var _this = this;
       http("get", "/api-user/busi/roles/delete", { id: id })
         .then(function (data) {
@@ -128,7 +131,7 @@ export default {
           console.error(e);
         });
     },
-    editProject: function (row) {
+    editProject: function (row: RoleInfo) {
       if (row.status == "1") {
         row.statusChecked = true;
       } else {
@@ -139,7 +142,7 @@ export default {
     addProjet() {
       this.showWindows("添加角色", {});
     },
-    showWindows: function (title, row) {
+    showWindows: function (title: string, row: RoleInfo) {
       console.log(row);
       this.roleInfo = row;
       this.wtitle = title;
@@ -171,7 +174,7 @@ export default {
       // }, 2000);
     },
   },
-};
+});
 </script>
 <style>
 th.column-money,

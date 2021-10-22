@@ -44,3 +44,20 @@ export interface mainRoleOptions {
     roles?: string,
     data?: [],
 }
+
+
+export interface GroupInfo {
+    id?: string,
+    name?: string,
+    type?: string,
+    statusChecked?: boolean,
+    status?: string,
+    pId?: string,
+}
+
+export interface RoleInfo {
+    id?: string,
+    name?: string,
+    statusChecked?: boolean,
+    status?:string,
+}

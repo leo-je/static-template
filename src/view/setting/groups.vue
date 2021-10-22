@@ -8,15 +8,14 @@
             v-model:selectedKeys="treeData.selectedKeys"
             :replace-fields="replaceFields"
             @select="selectTreeNode"
-          >
-          </a-directory-tree>
+          ></a-directory-tree>
         </div>
       </a-col>
       <a-col :span="20">
         <div class="group-info-container">
           <div class="add-button">
             <a-config-provider :auto-insert-space-in-button="false">
-              <a-button type="primary" @click="addProjet"> 添加 </a-button>
+              <a-button type="primary" @click="addProjet">添加</a-button>
             </a-config-provider>
           </div>
           <a-table :columns="columns" :data-source="data" bordered rowKey="id">
@@ -37,8 +36,8 @@
               </span>
             </template>
           </a-table>
-        </div></a-col
-      >
+        </div>
+      </a-col>
     </a-row>
 
     <!-- 对话框 -->
@@ -51,13 +50,10 @@
       >
         <a-form :model="group">
           <a-form-item label="用户组名称">
-            <a-input placeholder="请输入用户组名称" v-model:value="group.name"
-          /></a-form-item>
+            <a-input placeholder="请输入用户组名称" v-model:value="group.name" />
+          </a-form-item>
           <a-form-item label="用户组类型">
-            <a-input
-              placeholder="请输入用户组类型"
-              v-model:value="group.type"
-            />
+            <a-input placeholder="请输入用户组类型" v-model:value="group.type" />
           </a-form-item>
 
           <a-form-item label="状态">
@@ -68,10 +64,12 @@
     </div>
   </section>
 </template>
-<script>
-import { defineComponent, ref, watch } from "vue";
+<script lang="ts">
+import { defineComponent, ref, } from "vue";
 import http from "../../utils/http";
+import { Divider, Button, Row, Col, Modal, Form, FormItem, Switch, ConfigProvider, Table, Input, DirectoryTree } from "ant-design-vue";
 import moment from "moment";
+import { GroupInfo } from "../../interface";
 // 表头配置
 const columns = [
   {
@@ -98,30 +96,41 @@ const columns = [
 ];
 export default defineComponent({
   name: "SettingGroups",
-  data() {
-    const selectedKeys = null;
-    // watch(selectedKeys, () => {
-    //   console.log("selectedKeys", selectedKeys);
-    // });
+  components: {
+    ADivider: Divider,
+    AButton: Button,
+    ARow: Row,
+    ACol: Col, AModal: Modal,
+    AForm: Form, AFormItem: FormItem,
+    ASwitch: Switch,
+    AConfigProvider: ConfigProvider,
+    ATable: Table,
+    AInput: Input,
+    ADirectoryTree: DirectoryTree,
+  },
+  setup() {
+    const selectedKeys = [""];
+    let data: any[] = []
     return {
-      wtitle: "添加",
-      data: [],
+      wtitle: ref("添加"),
+      data: ref([]),
       columns,
-      addEditVisible: false,
-      confirmLoading: false,
-      treeData: {
+      addEditVisible: ref(false),
+      confirmLoading: ref(false),
+      treeData: ref({
         selectedKeys,
-        data: null,
-      },
-      replaceFields: {
+        data: data,
+      }),
+      replaceFields: ref({
         title: "name",
         key: "id",
-      },
-      group: {
+      }),
+      group: ref<GroupInfo>({
         id: "",
         name: "",
         statusChecked: true,
-      },
+        type: ""
+      }),
     };
   },
   mounted() {
@@ -131,11 +140,11 @@ export default defineComponent({
     getTree() {
       var _this = this;
       http("get", "/api-user/busi/group/tree")
-        .then(function (data) {
+        .then(function (data: any) {
           console.log(_this.treeData);
           console.log(data);
           if (data != null) {
-            _this.treeData.data = [data];
+            _this.treeData.data = [Object.assign({}, data)];
             if (!_this.treeData.selectedKeys) {
               _this.treeData.selectedKeys = [data.id];
             }
@@ -146,7 +155,7 @@ export default defineComponent({
           console.error(e);
         });
     },
-    getList(pid) {
+    getList(pid: string | null) {
       console.log("getList", this.treeData.selectedKeys);
       var _this = this;
       http("get", "/api-user/busi/group/all/list", { pid })
@@ -158,18 +167,18 @@ export default defineComponent({
           console.error(e);
         });
     },
-    deleteProject: function (id) {
+    deleteProject: function (id: string) {
       var _this = this;
       http("get", "/api-user/busi/user/delete", { id: id })
         .then(function (data) {
           console.log(data);
-          _this.getList();
+          _this.getList(null);
         })
         .catch(function (e) {
           console.error(e);
         });
     },
-    editProject: function (row) {
+    editProject: function (row: GroupInfo) {
       if (row.status == "1") {
         row.statusChecked = true;
       } else {
@@ -183,13 +192,13 @@ export default defineComponent({
       console.log("add", this.treeData.selectedKeys);
       this.showWindows("添加用户", {});
     },
-    showWindows: function (title, row) {
+    showWindows: function (title: string, row: GroupInfo) {
       console.log(row);
       this.group = row;
       this.wtitle = title;
       this.addEditVisible = true;
     },
-    formatTime: function (text) {
+    formatTime: function (text: string) {
       console.log(text);
       return moment(text).format("YYYY/MM/DD HH:mm:ss");
     },
@@ -215,7 +224,7 @@ export default defineComponent({
           _this.confirmLoading = false;
         });
     },
-    selectTreeNode(key, e) {
+    selectTreeNode(key: string[]) {
       console.log("selectTreeNode", key);
       this.getList(key[0]);
     },
