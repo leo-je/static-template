@@ -2,21 +2,7 @@ import { createRouter, createWebHistory, Router, RouteRecordRaw } from "vue-rout
 import { RouterInfo } from "../interface";
 const modules = import.meta.glob('../**/*.vue')
 
-
 const routes: Array<RouteRecordRaw> = []
-
-// let dd: any = await store.dispatch("LoadMenu", { id: "1" }).then(data => {
-//     if (data) {
-//         // routerInfos = [Object.assign({},data)]
-//         return data;
-//     }
-//     return null;
-// })
-
-// console.log("=================>", dd)
-// if (dd) {
-//     routerInfos = [Object.assign({}, dd)];
-// }
 const routerInfos: Array<RouterInfo> = [
     {
         path: '/401',
@@ -25,46 +11,13 @@ const routerInfos: Array<RouterInfo> = [
     },
 
 ]
-
-// const routes: Array<RouteRecordRaw> = [
-// {
-//     path: '/',
-//     name: 'Home',
-//     component: () => import('../view/dashboard.vue'),
-//     children: [
-//         {
-//             path: '/setting/roles',
-//             name: 'SettingRoles',
-//             component: () => import('../view/setting/roles.vue'),
-//         },
-//         {
-//             path: '/setting/groups',
-//             name: 'SettingGroups',
-//             component: () => import('../view/setting/groups.vue'),
-//         },
-//         {
-//             path: '/setting/users',
-//             name: 'SettingUsers',
-//             component: () => import('../view/setting/users.vue'),
-//         },
-//     ]
-// },
-// ];
-
 const getRow = (routerInfo: RouterInfo): RouteRecordRaw => {
-    console.log(routerInfo)
-    let view = modules[routerInfo.componentPath ? routerInfo.componentPath : "../view/commonView.vue"]
-    console.log("=====================>", view)
+    let view = modules[routerInfo.componentPath ? routerInfo.componentPath.replace("@", "..").replace("src", "..") : "../view/commonView.vue"]
     const row: RouteRecordRaw = {
         path: routerInfo.path ? routerInfo.path : "",
         name: routerInfo.name,
         component: view
-        // () => {
-        //     //import(routerInfo.componentPath ? routerInfo.componentPath : "../view/setting.vue")
-        //     return modules[routerInfo.componentPath ? routerInfo.componentPath : "../view/setting.vue"]
-        // },
     }
-    console.log(routerInfo.children)
     if (routerInfo.children != null && routerInfo.children.length > 0) {
         const ch: RouteRecordRaw[] = []
         routerInfo.children.forEach(c => {
@@ -83,16 +36,6 @@ if (routerInfos) {
     })
 }
 
-console.log(modules)
-console.log("router ===============>", routes)
-
-
-// const router = createRouter({
-//     history: createWebHistory(),
-//     routes,
-// });
-
-
 let router = createRouter({
     history: createWebHistory(),
     routes,
@@ -110,11 +53,9 @@ export function setRouter(data: RouterInfo) {
             routes2.push(row)
         })
     }
-
     routes2.forEach(r => {
         router.addRoute(r)
     })
-
     let dd = router.getRoutes()
     console.log("setRouter==============>" + dd)
     router.push({ path: "/" })
