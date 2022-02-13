@@ -48,16 +48,36 @@
         :confirm-loading="confirmLoading"
         @ok="handleOk"
       >
-        <a-form :model="group">
-          <a-form-item label="用户组名称">
-            <a-input placeholder="请输入用户组名称" v-model:value="group.name" />
+        <a-form :model="form">
+          <a-form-item label="菜单名称">
+            <a-input placeholder="菜单名称" v-model:value="form.name" />
           </a-form-item>
-          <a-form-item label="用户组类型">
-            <a-input placeholder="请输入用户组类型" v-model:value="group.type" />
+          <a-form-item label="菜单路径">
+            <a-input placeholder="菜单路径" v-model:value="form.path" />
+          </a-form-item>
+
+          <a-form-item label="组件路径">
+            <a-input placeholder="组件路径" v-model:value="form.componentPath" />
+          </a-form-item>
+
+          <a-form-item label="菜单图标">
+            <a-input placeholder="菜单图标" v-model:value="form.iconName" />
+          </a-form-item>
+
+          <a-form-item label="菜单排序值">
+            <a-input placeholder="菜单排序值" v-model:value="form.sort" />
+          </a-form-item>
+
+          <a-form-item label="类型">
+            <a-radio-group v-model:value="form.type">
+              <a-radio-button value="1">显示</a-radio-button>
+              <a-radio-button value="2">隐藏</a-radio-button>
+              <a-radio-button value="3">连接</a-radio-button>
+            </a-radio-group>
           </a-form-item>
 
           <a-form-item label="状态">
-            <a-switch v-model:checked="group.statusChecked" />
+            <a-switch v-model:checked="form.statusChecked" />
           </a-form-item>
         </a-form>
       </a-modal>
@@ -65,22 +85,27 @@
   </section>
 </template>
 <script lang="ts">
-import { defineComponent, ref, } from "vue";
+import { defineComponent, ref } from "vue";
 import http from "../../utils/http";
-import { Divider, Button, Row, Col, Modal, Form, FormItem, Switch, ConfigProvider, Table, Input, DirectoryTree } from "ant-design-vue";
+import { Input, Divider, Button, Row, DirectoryTree, Table, Col, Form, FormItem, Modal, Switch, RadioButton, RadioGroup, ConfigProvider } from "ant-design-vue";
 import moment from "moment";
-import { GroupInfo } from "../../interface";
+import { RouterInfo } from "../../interface";
 // 表头配置
 const columns = [
   {
-    title: "用户组名称",
+    title: "名称",
     dataIndex: "name",
     slots: { customRender: "name" },
   },
   {
-    title: "用户组类型",
-    dataIndex: "type",
-    slots: { customRender: "type" },
+    title: "路径",
+    dataIndex: "path",
+    slots: { customRender: "path" },
+  },
+  {
+    title: "排序",
+    dataIndex: "sort",
+    slots: { customRender: "sort" },
   },
   {
     title: "状态",
@@ -94,23 +119,30 @@ const columns = [
     slots: { customRender: "action" },
   },
 ];
+
 export default defineComponent({
-  name: "SettingGroups",
+  name: "SettingMenu",
   components: {
+    AInput: Input,
     ADivider: Divider,
     AButton: Button,
     ARow: Row,
-    ACol: Col, AModal: Modal,
-    AForm: Form, AFormItem: FormItem,
-    ASwitch: Switch,
-    AConfigProvider: ConfigProvider,
-    ATable: Table,
-    AInput: Input,
     ADirectoryTree: DirectoryTree,
+    ATable: Table,
+    ACol: Col,
+    AForm: Form,
+    AFormItem: FormItem,
+    AModal: Modal,
+    ASwitch: Switch,
+    ARadioButton: RadioButton,
+    ARadioGroup: RadioGroup,
+    AConfigProvider: ConfigProvider
   },
   setup() {
-    const selectedKeys = [""];
-    let data: any[] = []
+    const selectedKeys: Array<string> = [];
+    // watch(selectedKeys, () => {
+    //   console.log("selectedKeys", selectedKeys);
+    // });
     return {
       wtitle: ref("添加"),
       data: ref([]),
@@ -119,18 +151,13 @@ export default defineComponent({
       confirmLoading: ref(false),
       treeData: ref({
         selectedKeys,
-        data: data,
+        data: [Object.create(null)],
       }),
       replaceFields: ref({
         title: "name",
         key: "id",
       }),
-      group: ref<GroupInfo>({
-        id: "",
-        name: "",
-        statusChecked: true,
-        type: ""
-      }),
+      form: ref<RouterInfo>(Object.create(null)),
     };
   },
   mounted() {
@@ -139,14 +166,15 @@ export default defineComponent({
   methods: {
     getTree() {
       var _this = this;
-      http("get", "/api-user/busi/group/tree")
-        .then(function (data: any) {
+      http("get", "/api-user/busi/menu/all/tree")
+        .then(function (data) {
           console.log(_this.treeData);
           console.log(data);
           if (data != null) {
-            _this.treeData.data = [Object.assign({}, data)];
+            const _data = [Object.assign({}, data)];
+            _this.treeData.data = _data;
             if (!_this.treeData.selectedKeys) {
-              _this.treeData.selectedKeys = [data.id];
+              _this.treeData.selectedKeys = [Object.assign({ id: "" }, data).id];
             }
             _this.getList(_this.treeData.selectedKeys[0]);
           }
@@ -155,10 +183,10 @@ export default defineComponent({
           console.error(e);
         });
     },
-    getList(pid: string | null) {
+    getList(pid?: string) {
       console.log("getList", this.treeData.selectedKeys);
       var _this = this;
-      http("get", "/api-user/busi/group/all/list", { pid })
+      http("get", "/api-user/busi/menu/all/list", { pid })
         .then(function (data) {
           console.log(data);
           _this.data = data;
@@ -169,16 +197,16 @@ export default defineComponent({
     },
     deleteProject: function (id: string) {
       var _this = this;
-      http("get", "/api-user/busi/user/delete", { id: id })
+      http("delete", "/api-user/busi/menu/" + id)
         .then(function (data) {
           console.log(data);
-          _this.getList(null);
+          _this.getList();
         })
         .catch(function (e) {
           console.error(e);
         });
     },
-    editProject: function (row: GroupInfo) {
+    editProject: function (row: any) {
       if (row.status == "1") {
         row.statusChecked = true;
       } else {
@@ -186,15 +214,15 @@ export default defineComponent({
       }
       let user = JSON.parse(JSON.stringify(row));
       user.birthday = moment(user.birthday).format("YYYY/MM/DD HH:mm:ss");
-      this.showWindows("编辑用户", user);
+      this.showWindows("编辑菜单", user);
     },
     addProjet() {
       console.log("add", this.treeData.selectedKeys);
-      this.showWindows("添加用户", {});
+      this.showWindows("添加菜单", {});
     },
-    showWindows: function (title: string, row: GroupInfo) {
+    showWindows: function (title: string, row: any) {
       console.log(row);
-      this.group = row;
+      this.form = row;
       this.wtitle = title;
       this.addEditVisible = true;
     },
@@ -203,16 +231,16 @@ export default defineComponent({
       return moment(text).format("YYYY/MM/DD HH:mm:ss");
     },
     handleOk() {
-      console.log(this.group);
+      console.log(this.form);
       this.confirmLoading = true;
       var _this = this;
-      this.group.pId = this.treeData.selectedKeys[0];
-      if (this.group.statusChecked) {
-        this.group.status = "1";
+      this.form.pId = this.treeData.selectedKeys[0];
+      if (this.form.statusChecked) {
+        this.form.status = "1";
       } else {
-        this.group.status = "0";
+        this.form.status = "0";
       }
-      http("post", "/api-user/busi/group/save", this.group)
+      http("post", "/api-user/busi/menu/save", this.form)
         .then(function (data) {
           console.log(data);
           _this.addEditVisible = false;
@@ -224,14 +252,14 @@ export default defineComponent({
           _this.confirmLoading = false;
         });
     },
-    selectTreeNode(key: string[]) {
+    selectTreeNode(key: any, e: any) {
       console.log("selectTreeNode", key);
       this.getList(key[0]);
     },
   },
 });
 </script>
-<style>
+<style scoped>
 th.column-money,
 td.column-money {
   text-align: right !important;

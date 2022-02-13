@@ -18,20 +18,7 @@
             v-model:openKeys="openKeys"
             style="height: 100%"
           >
-            <a-sub-menu key="sub1">
-              <template #title>
-                <span><user-outlined />系统维护</span>
-              </template>
-              <a-menu-item key="roles" @click="to('/setting/roles')"
-                >角色维护</a-menu-item
-              >
-              <a-menu-item key="4" @click="to('/setting/users')"
-                >用户管理</a-menu-item
-              >
-              <a-menu-item key="5" @click="to('/setting/groups')"
-                >用户组管理</a-menu-item
-              >
-            </a-sub-menu>
+            <SubMenu v-if="menus.length > 0" :menus="menus"></SubMenu>
           </a-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '695px' }">
@@ -39,55 +26,75 @@
         </a-layout-content>
       </a-layout>
     </a-layout-content>
-    <a-layout-footer style="text-align: center">
-      Ant Design ©2018 Created by Ant UED
-    </a-layout-footer>
+    <a-layout-footer style="text-align: center">Ant Design ©2018 Created by Ant UED</a-layout-footer>
   </a-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue';
-import { message } from 'ant-design-vue';
-import { UserOutlined } from "@ant-design/icons-vue";
+import { defineComponent, ref } from 'vue';
+import { message, Layout, LayoutHeader, LayoutFooter, LayoutContent, Menu, LayoutSider } from 'ant-design-vue';
+import { UserOutlined, createFromIconfontCN } from "@ant-design/icons-vue";
+import SubMenu from '../components/SubMenu';
+import store from '../store';
+import { RouterInfo } from '../interface';
+
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js',
+});
 
 export default defineComponent({
   setup() {
     return {
-      loading:false,
+      loading: false,
       selectedKeys1: ["2"],
       selectedKeys2: ["1"],
       openKeys: ["sub1"],
       user: ref({
         nickName: "xxx",
       }),
+      menus: ref<RouterInfo[]>([])
     };
   },
   components: {
     UserOutlined,
+    IconFont,
+    SubMenu,
+    ALayout: Layout,
+    ALayoutHeader: LayoutHeader,
+    ALayoutFooter: LayoutFooter,
+    ALayoutContent: LayoutContent,
+    AMenu: Menu,
+    ALayoutSider: LayoutSider,
   },
   methods: {
     to(path: string) {
       this.$router.push({ path });
-    },
+    }
   },
   mounted() {
     let _this = this;
-    this.$store
+    store
       .dispatch("LoginByUsername", {})
       .then((data) => {
-        console.log("user-data", data);
-        console.log("user", this.user);
         this.user = Object.assign(this.user, data);
-        console.log("user", this.user);
+        return store.dispatch("LoadMenu", { id: "1" });
+      }).then((data: any) => {
+        console.log("======================>", data)
+        if (data) {
+          let menus = data.children
+          console.log("======================>", menus)
+          _this.menus = (menus);
+        }
       })
-      .catch((e:Error) => {
+      .catch((e: Error) => {
         console.error("dash", e);
         message.error(e.message);
         this.loading = false;
       });
   },
   beforeCreate() {
-    this.$router.push({ path: "/setting/roles" });
+    // this.$router.push({ path: "/" });
   },
 });
 </script>

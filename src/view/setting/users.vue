@@ -2,7 +2,7 @@
   <section>
     <div class="add-button">
       <a-config-provider :auto-insert-space-in-button="false">
-        <a-button type="primary" @click="addProjet"> 添加 </a-button>
+        <a-button type="primary" @click="addProjet">添加</a-button>
       </a-config-provider>
     </div>
     <a-table :columns="columns" :data-source="data" bordered rowKey="id">
@@ -32,11 +32,11 @@
       </template>
       <!-- <template #title="">
       Header
-    </template> -->
+      </template>-->
 
       <!-- <template #footer="">
       Footer
-    </template> -->
+      </template>-->
     </a-table>
 
     <!-- 对话框 -->
@@ -47,15 +47,12 @@
         :confirm-loading="confirmLoading"
         @ok="handleOk"
       >
-        <a-form :model="user" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form :model="user">
           <a-form-item label="用户名称">
-            <a-input placeholder="请输入用户名称" v-model:value="user.username"
-          /></a-form-item>
+            <a-input placeholder="请输入用户名称" v-model:value="user.username" />
+          </a-form-item>
           <a-form-item label="用户昵称">
-            <a-input
-              placeholder="请输入用户昵称"
-              v-model:value="user.nickName"
-            />
+            <a-input placeholder="请输入用户昵称" v-model:value="user.nickName" />
           </a-form-item>
           <a-form-item label="用户性别">
             <a-radio-group v-model:value="user.sex">
@@ -75,7 +72,7 @@
                   :options="mainRoleOptions.data"
                 />
               </a-col>
-              <a-col :span="2"> </a-col>
+              <a-col :span="2"></a-col>
               <a-col :span="11">
                 <a-tree-select
                   v-model:value="user.mainRole.groupId"
@@ -85,8 +82,7 @@
                   :replace-fields="mainRoleGroupOptions.replaceFields"
                   placeholder="请选择主岗组织"
                   tree-default-expand-all
-                >
-                </a-tree-select>
+                ></a-tree-select>
               </a-col>
             </a-row>
           </a-form-item>
@@ -95,9 +91,12 @@
     </div>
   </section>
 </template>
-<script>
+<script lang="ts">
 import http from "../../utils/http";
 import moment from "moment";
+import { Row, Select, Input, Table, Col, Form, Modal, FormItem, TreeSelect, DatePicker, RadioButton, RadioGroup, Divider, Button, ConfigProvider } from "ant-design-vue";
+import { defineComponent, ref } from "vue";
+import { MainRoleGroupOptions, mainRoleOptions, UserInfo } from "../../interface";
 // 表头配置
 const columns = [
   {
@@ -131,44 +130,47 @@ const columns = [
     dataIndex: "status",
     slots: { customRender: "status" },
   },
-  //   {
-  //     title: "Address",
-  //     dataIndex: "address",
-  //   },
   {
     title: "Action",
     key: "action",
     slots: { customRender: "action" },
   },
 ];
-export default {
+
+export default defineComponent({
   name: "SettingRoles",
-  data() {
+  components: {
+    ARow: Row,
+    ASelect: Select,
+    AInput: Input,
+    ATable: Table,
+    ACol: Col,
+    AForm: Form,
+    AModal: Modal,
+    AFormItem: FormItem,
+    ATreeSelect: TreeSelect,
+    ADatePicker: DatePicker,
+    ARadioButton: RadioButton,
+    ARadioGroup: RadioGroup,
+    ADivider: Divider,
+    AButton: Button,
+    AConfigProvider: ConfigProvider,
+  },
+  setup() {
     return {
       wtitle: "添加",
-      data: [],
+      data: ref([]),
       columns,
-      addEditVisible: false,
-      confirmLoading: false,
-      user: {
-        id: "",
-        name: "",
-        statusChecked: true,
-        mainRole: {
-          roleId: "",
-          groupId: "",
-        },
-      },
-      mainRoleOptions: {
-        data: null,
-      },
-      mainRoleGroupOptions: {
+      addEditVisible: ref(false),
+      confirmLoading: ref(false),
+      user: ref<UserInfo>(Object.create(null)),
+      mainRoleOptions: ref<mainRoleOptions>(Object.create(null)),
+      mainRoleGroupOptions: ref<MainRoleGroupOptions>({
         replaceFields: {
           title: "name",
           key: "id",
-        },
-        data: null,
-      },
+        }
+      }),
     };
   },
   mounted() {
@@ -180,11 +182,11 @@ export default {
       let _this = this;
       // roles
       http("post", "/api-user/busi/roles/valid/list")
-        .then(function (data) {
+        .then(function (data: any) {
           console.log(data);
           if (data != null && data.length > 0) {
             _this.mainRoleOptions.roles = data;
-            _this.mainRoleOptions.data = data.map((role) =>
+            _this.mainRoleOptions.data = data.map((role: any) =>
               Object.assign({ value: role.id, label: role.name })
             );
             console.log(
@@ -211,7 +213,7 @@ export default {
           console.error(e);
         });
     },
-    setTreeNodeValue(nodes) {
+    setTreeNodeValue(nodes: Array<any>) {
       nodes.forEach((node) => {
         node.value = node.id;
         if (node.children != null && node.children.length > 0) {
@@ -232,7 +234,7 @@ export default {
           console.error(e);
         });
     },
-    deleteProject: function (id) {
+    deleteProject: function (id: string) {
       var _this = this;
       http("get", "/api-user/busi/user/delete", { id: id })
         .then(function (data) {
@@ -243,7 +245,7 @@ export default {
           console.error(e);
         });
     },
-    editProject: function (row) {
+    editProject: function (row: any) {
       var _this = this;
       http("post", "/api-user/busi/user/info/" + row.id, {})
         .then(function (data) {
@@ -265,22 +267,15 @@ export default {
         });
     },
     addProjet() {
-      this.showWindows("添加用户", {
-        mainRole: {
-          id: "",
-          group: {
-            id: "",
-          },
-        },
-      });
+      this.showWindows("添加用户", { mainRole: { roleId: "", groupId: "" } });
     },
-    showWindows: function (title, row) {
+    showWindows: function (title: string, row: UserInfo) {
       console.log(row);
       this.user = row;
       this.wtitle = title;
       this.addEditVisible = true;
     },
-    formatTime: function (text) {
+    formatTime: function (text: any) {
       return moment(text).format("YYYY/MM/DD HH:mm:ss");
     },
     handleOk() {
@@ -301,7 +296,7 @@ export default {
         });
     },
   },
-};
+});
 </script>
 <style>
 th.column-money,
