@@ -3,7 +3,7 @@
 # WORKDIR /app
 # RUN npm install && npm run build
  
-FROM nginx
+FROM nginx:latest
 RUN mkdir /app
 # COPY --from=0 /app/dist /app
 COPY ./dist /app
