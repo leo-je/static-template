@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import { getRouter } from "../router";
+import { getRouter, appRouterContext } from "../router";
 import { SubMenu, MenuItem } from "ant-design-vue";
 
 export default defineComponent({
@@ -12,14 +12,29 @@ export default defineComponent({
     AMenuItem: MenuItem
   },
   setup(props) {
-    const getMenu = (menus: any) => {
-      return menus.map((item: any) => {
-        return(
-        <>
-          {item.children ? <a-sub-menu title={item.name} >
-            {getMenu(item.children)}
-          </a-sub-menu> : <a-menu-item onClick={() => getRouter().push({ path: item.path })} >{item.name}</a-menu-item>}
-        </>)
+    const getMenu = (menus: any[]) => {
+      // 排除顶级菜单不渲染
+      let tagMenus = menus[0].pId == '~' ? menus[0].children : menus;
+      return tagMenus.map((item: any) => {
+        console.log(item.path)
+        return (
+          <>
+            {item.children ?
+              <>
+                <a-sub-menu title={item.name} >
+                  {
+                    getMenu(item.children)
+                  }
+                </a-sub-menu>
+              </> :
+              <>
+                <a-menu-item onClick={() => {
+                  appRouterContext.routerState.router.push({ path: item.path })
+                }} >{item.name
+                  }</a-menu-item>
+              </>
+            }
+          </>)
       })
     }
     return () => getMenu(props.menus);

@@ -73,17 +73,18 @@ export default defineComponent({
     }
   },
   mounted() {
+    console.log("dashboard")
     let _this = this;
     store
       .dispatch("LoginByUsername", {})
       .then((data) => {
         this.user = Object.assign(this.user, data);
-        return store.dispatch("LoadMenu", { id: "1" });
+        return store.dispatch("LoadMenu", { id: "0" });
       }).then((data: any) => {
-        console.log("======================>", data)
+        console.log("============LoginByUsername==========>", data)
         if (data) {
-          let menus = data.children
-          console.log("======================>", menus)
+          let menus = [data]
+          console.log("===========LoginByUsername===========>", menus)
           _this.menus = (menus);
         }
       })

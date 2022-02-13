@@ -3,34 +3,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import http from './utils/http';
+import { setRouter } from './router'
+import { defineComponent } from 'vue';
+
 export default defineComponent({
   name: 'App',
-  components: {
+  setup() {
+    return {}
   },
-    mounted() {
-    // let _this = this;
-    // store
-    //   .dispatch("LoginByUsername", {})
-    //   .then((data,) => {
-    //     store.dispatch("LoadMenu", { id: "1" }).then(data => {
-    //     if (data) {
-    //         let routerData: Array<RouteRecordRaw> = [Object.assign({}, data)]
-    //         const newRouter = createRouter({
-    //             history: createWebHistory(),
-    //             routes: routerData,
-    //         })
-    //         router. // reset router
-    //     }
-    // })
-    //   })
-    //   .catch((e: Error) => {
-    //     console.error("dash", e);
-    //     message.error(e.message);
-    //   });
+  mounted() {
+    http("get", "/api-user/busi/menu/valid/tree", { id: "0" })
+      .then(data => {
+        //后台获取路由数并添加到路由对象
+        setRouter([data]  )
+      }).catch(e => {
+        console.error("==============>", e);
+      });
   },
   beforeCreate() {
-    this.$router.push({ path: "/" });
+
   }
 })
 </script>

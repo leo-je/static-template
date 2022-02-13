@@ -13,12 +13,13 @@ export default defineConfig({
   },
   plugins: [vue(), vueJsx(),viteCompression()],
   server: {
+    host: '0.0.0.0',
     proxy: {
       //这里是通过请求/api 来转发到 https://api.pingping6.com/
       //假如你要请求https://api.*.com/a/a
       //那么axios的url，可以配置为 /api/a/a
-      '/api-user': {
-        target: 'http://127.0.0.1:8080',
+      '/api': {
+        target: 'http://192.168.200.242:8080',
         changeOrigin: true,
         //rewrite: (path) => path.replace(/^\/api/, ""),
       },

@@ -1,3 +1,14 @@
+import { Router } from "vue-router";
+
+export interface AppRouterState {
+    router: Router | any,
+    modules: any
+}
+
+export interface AppRouter {
+    routerState: AppRouterState,
+}
+
 export interface RouterInfo {
     id?: string,
     name?: string,
@@ -59,5 +70,5 @@ export interface RoleInfo {
     id?: string,
     name?: string,
     statusChecked?: boolean,
-    status?:string,
+    status?: string,
 }
