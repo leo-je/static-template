@@ -18,7 +18,7 @@ export default defineConfig({
       //假如你要请求https://api.*.com/a/a
       //那么axios的url，可以配置为 /api/a/a
       '/api-user': {
-        target: 'http://10.8.10.205:8080',
+        target: 'http://127.0.0.1:8080',
         changeOrigin: true,
         //rewrite: (path) => path.replace(/^\/api/, ""),
       },

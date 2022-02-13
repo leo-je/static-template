@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { getRouter } from '../router';
 
 //创建axios的一个实例 
@@ -21,12 +21,12 @@ instance.interceptors.request.use(function (config) {
 });
 
 //----------------- 二、响应拦截器 忽略
-instance.interceptors.response.use(function (response) {
+instance.interceptors.response.use(function (response: AxiosResponse) {
     //console.log(response);
     return response.data;
-}, function (error) {
+}, function (error: AxiosError) {
     // 对响应错误
-    if (error && error.response && error.response.status == 401) {
+    if (error && error.response && (error.response.status == 401 || error.response.status == 403)) {
         // router.replace({
         //     path: '/'
         // })
