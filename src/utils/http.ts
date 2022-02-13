@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { getRouter } from '../router';
 
 //创建axios的一个实例 
@@ -10,10 +10,10 @@ var instance = axios.create({
 instance.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 //------------------- 一、请求拦截器 忽略
-instance.interceptors.request.use(function (config) {
+instance.interceptors.request.use(function (config: AxiosRequestConfig) {
     //console.log(config);
     return config;
-}, function (error) {
+}, function (error: AxiosError) {
     console.log(error);
     // 对请求错误做些什么
     console.log('请求拦截器报错');

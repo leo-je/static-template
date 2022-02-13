@@ -8,3 +8,10 @@ declare module '*.vue' {
 }
 
 declare module '@ant-design/icons-vue';
+
+declare const React: string;
+declare module '*.json';
+declare module '*.png';
+declare module '*.jpg';
+declare module '*.bpmn';
+

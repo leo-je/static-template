@@ -3,15 +3,36 @@ const { resolve } = require('path')
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import viteCompression from 'vite-plugin-compression';
+import { rawTransform } from './viteExtend';
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // const _resolve = (dir) =>  path.resolve(__dirname, dir);
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    //声明深度路径模块
+    include: [
+      'bpmn-js/lib/Modeler',
+      'highlight.js',
+      'codemirror',
+      'codemirror/mode/xml/xml.js',
+      'codemirror/addon/hint/xml-hint.js',
+      'bpmn-js/lib/features/label-editing/LabelUtil.js',
+    ],
+  },
   esbuild: {
     jsxFactory: 'h',
     jsxFragment: 'Fragment'
   },
-  plugins: [vue(), vueJsx(),viteCompression()],
+  plugins: [vue(), vueJsx(), rawTransform([/\.bpmn$/]), viteCompression(), AutoImport({
+    resolvers: [ElementPlusResolver()],
+  }),
+  Components({
+    resolvers: [ElementPlusResolver()],
+  }),
+  ],
   server: {
     host: '0.0.0.0',
     proxy: {
@@ -26,14 +47,22 @@ export default defineConfig({
 
     }
   },
-  build:{
-    assetsDir:"static"
+  build: {
+    assetsDir: "static"
   },
   resolve: {
-    alias: {
-      '@/': resolve(__dirname, 'src'),
-      '_c': resolve(__dirname, 'src/components')
-    }
+    alias: [
+      {
+        find: '@',
+        replacement: resolve(__dirname, './src'),
+      },
+      // '@/': resolve(__dirname, 'src'),
+      // '_c': resolve(__dirname, 'src/components')
+      {
+        find: '_c',
+        replacement: resolve(__dirname, './src/components'),
+      },
+    ]
   }
 })
 

@@ -13,6 +13,7 @@ export default defineComponent({
     return {}
   },
   mounted() {
+    this.$router.push({path:'/401'})
     http("get", "/api-user/busi/menu/valid/tree", { id: "0" })
       .then(data => {
         //后台获取路由数并添加到路由对象
