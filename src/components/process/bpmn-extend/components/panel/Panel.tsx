@@ -2,6 +2,7 @@ import { defineComponent, reactive, watch } from 'vue';
 
 import DynamicBinder from '../../../bpmn/components/dynamic-binder';
 import { ElCollapse, ElCollapseItem } from 'element-plus';
+import {Expand,List} from '@element-plus/icons-vue'
 // 替换
 import { GroupProperties } from '../../config';
 import { BpmnStore } from '../../store';
@@ -69,9 +70,9 @@ export default defineComponent({
               onClick={() => (panelState.shrinkageOff = !panelState.shrinkageOff)}
             >
               {panelState.shrinkageOff ? (
-                <i class="el-icon-s-fold" />
+                <el-icon size={30} ><Expand /></el-icon>
               ) : (
-                <i class="el-icon-s-unfold" />
+                <el-icon size={30} ><List /></el-icon>
               )}
             </div>
             <div class="bpmn-panel" v-show={!panelState.shrinkageOff}>

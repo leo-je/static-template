@@ -1,7 +1,7 @@
 import { reactive } from "vue";
 import { createRouter, createWebHistory, Router, RouteRecordRaw } from "vue-router";
 import { AppRouter, AppRouterState, RouterInfo } from "../interface";
-const modules = import.meta.glob('../**/*.vue')
+const modules = import.meta.glob('../**/*.(vue|tsx)')
 
 const appRouterState = reactive<AppRouterState>({
     router: initRouter(),
@@ -64,10 +64,23 @@ export default router;
 
 export function setRouter(data: RouterInfo[]) {
     const router = appRouterContext.routerState.router
+    let tagetData: RouterInfo[] = data.slice(0);
+    let top: RouterInfo[] = []
+    if (tagetData[0].pId == '~') {
+        top = tagetData[0].children?.filter(ch => ch.path === 'top') || []
+        console.log(top)
+        tagetData[0].children = tagetData[0].children?.filter(ch => ch.path != 'top') || []
+        console.log(tagetData)
+        if (top.length >= 1) {
+            tagetData.push(...top[0].children ? top[0].children : [])
+        }
+        console.log(tagetData)
+    }
+    console.log(tagetData)
     console.log("setRouter==============>")
-    let routerInfos = data;
+    let routerInfos = tagetData;
     let routes2: Array<RouteRecordRaw> = []
-    if (routerInfos) {  
+    if (routerInfos) {
         routerInfos.forEach((routerInfo) => {
             const row = getRow(routerInfo)
             routes2.push(row)

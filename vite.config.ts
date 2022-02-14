@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-const { resolve } = require('path')
+import { resolve } from 'path';
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import viteCompression from 'vite-plugin-compression';
@@ -51,18 +51,16 @@ export default defineConfig({
     assetsDir: "static"
   },
   resolve: {
-    alias: [
-      {
+    alias:
+      [{
         find: '@',
         replacement: resolve(__dirname, './src'),
       },
-      // '@/': resolve(__dirname, 'src'),
-      // '_c': resolve(__dirname, 'src/components')
       {
         find: '_c',
         replacement: resolve(__dirname, './src/components'),
       },
-    ]
+      ]
   }
 })
 

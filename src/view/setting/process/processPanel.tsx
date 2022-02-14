@@ -1,5 +1,5 @@
 import { defineComponent, ref } from 'vue';
-import { Modeler, Panel, BpmnActions, BpmnStore } from '../../components/process';
+import { Modeler, Panel, BpmnActions, BpmnStore } from '@/components/process';
 import './processPanel.css';
 import http from '@/utils/http';
 import { ElMessage } from 'element-plus';

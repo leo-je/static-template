@@ -46,7 +46,7 @@ export default defineComponent({
               content: item.label,
               placement: 'top',
               offset: 10,
-              'open-delay': 300,
+              'show-after': 300,
             };
 
             return (

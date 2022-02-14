@@ -12,7 +12,7 @@ export interface AppRouter {
 export interface RouterInfo {
     id?: string,
     name?: string,
-    children?: RouterInfo[],
+    children?: RouterInfo[] | null,
     path?: string,
     iconName?: string,
     componentPath?: string,
