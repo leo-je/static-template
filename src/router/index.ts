@@ -8,11 +8,9 @@ const appRouterState = reactive<AppRouterState>({
     modules: modules
 })
 function getRow(routerInfo: RouterInfo): RouteRecordRaw {
-    console.log("getRow:" + routerInfo.componentPath)
     let view = modules[routerInfo.componentPath ? routerInfo.componentPath.replace("@", "..").replace("src", "..") : "../view/commonView.vue"]
     if (!view) {
         view = modules['../view/commonView.vue']
-        console.log(view)
     }
     const row: RouteRecordRaw = {
         path: routerInfo.path ? routerInfo.path : "",
@@ -62,22 +60,17 @@ export const appRouterContext: AppRouter = {
 const router = appRouterContext.routerState.router
 export default router;
 
-export function setRouter(data: RouterInfo[]) {
+export function setRouter(data: RouterInfo[], path?: string) {
     const router = appRouterContext.routerState.router
     let tagetData: RouterInfo[] = data.slice(0);
     let top: RouterInfo[] = []
     if (tagetData[0].pId == '~') {
         top = tagetData[0].children?.filter(ch => ch.path === 'top') || []
-        console.log(top)
         tagetData[0].children = tagetData[0].children?.filter(ch => ch.path != 'top') || []
-        console.log(tagetData)
         if (top.length >= 1) {
             tagetData.push(...top[0].children ? top[0].children : [])
         }
-        console.log(tagetData)
     }
-    console.log(tagetData)
-    console.log("setRouter==============>")
     let routerInfos = tagetData;
     let routes2: Array<RouteRecordRaw> = []
     if (routerInfos) {
@@ -86,16 +79,28 @@ export function setRouter(data: RouterInfo[]) {
             routes2.push(row)
         })
     }
-    console.log(routes2)
     routes2.forEach(r => {
         router.addRoute(r)
     })
-    let dd = router.getRoutes()
-    console.log(dd)
-    console.log("setRouter==============>")
     appRouterContext.routerState.router = router
-    router.push({ path: "/" })
+    if (path) {
+        // xxx?dd=xx&ddf=ff
+        let paramArr = path.split('?').length > 1 ? path.split('?')[1].split('&') : []
+        let query: { [key: string]: any } = {}
+        if (paramArr.length > 0) {
+            paramArr.map(arr => {
+                arr = decodeURIComponent(arr)
+                query[arr.split('=')[0]] = arr.split('=')[1]
+            })
+        }
+        path = path.split('?')[0]
+        router.push({ path, query })
+    } else {
+        router.push({ path: '/' })
+    }
+
 }
+
 
 export function getRouter(): Router {
     return appRouterContext.routerState.router

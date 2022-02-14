@@ -13,10 +13,12 @@ export default defineComponent({
     return {}
   },
   mounted() {
+    // 获取当前路径,在设置完router后打开
+    let currUrl = location.pathname + location.search
     http("get", "/api-user/busi/menu/valid/tree", { id: "0" })
       .then(data => {
         //后台获取路由数并添加到路由对象
-        setRouter([data]  )
+        setRouter([data], currUrl)
       }).catch(e => {
         console.error("==============>", e);
       });
