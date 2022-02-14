@@ -222,7 +222,7 @@ export const getElementTypeListenerProperties = function (options: {
             editComponent: function (scope: any, state: SubListState<any>): JSX.Element {
               return (
                 <ElFormItem
-                  size="mini"
+                  size="small"
                   class="sublist-form-item"
                   label={scope.column.name}
                   prop={scope.column.property}
@@ -248,7 +248,7 @@ export const getElementTypeListenerProperties = function (options: {
             editComponent: function (scope: any, state: SubListState<any>): JSX.Element {
               return (
                 <ElFormItem
-                  size="mini"
+                  size="small"
                   class="sublist-form-item"
                   label={scope.column.name}
                   prop={scope.column.property}

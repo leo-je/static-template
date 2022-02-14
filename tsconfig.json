@@ -1,4 +1,8 @@
 {
+  "include": [
+    "./src/"
+    // "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"
+  ],
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -9,22 +13,21 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "lib": ["esnext", "dom"]
-  },
-  "include": [
-    "./src/"
-    // "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"
-  ],
-  "types": [
-    "vite/client"
-  ],
-  "baseUrl": "src",
-  "paths": {
-    "@/*": [
-      "./*"
+    "lib": [
+      "esnext",
+      "dom"
     ],
-    "/#/*": [
-      "./types/*"
-    ]
+    "baseUrl": "src",
+    "types": [
+      "vite/client"
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "/#/*": [
+        "./types/*"
+      ]
+    }
   }
 }

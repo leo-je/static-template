@@ -133,7 +133,7 @@ export default defineComponent({
                         mode: 'application/xml', // HMTL混合模式
                         theme: 'material',
                         lineNumbers: true,
-                        lint: true,
+                        // lint: true,
                         // theme: 'monokai', // 使用monokai模版
                       },
                     );

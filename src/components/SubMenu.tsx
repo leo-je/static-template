@@ -12,7 +12,8 @@ export default defineComponent({
     AMenuItem: MenuItem
   },
   setup(props) {
-    const getMenu = (menus: any[]) => {
+    const getMenu = (menus?: any[]) => {
+      if(!menus) return<></>
       // 排除顶级菜单不渲染
       let tagMenus = menus[0].pId == '~' ? menus[0].children : menus;
       return tagMenus.map((item: any) => {

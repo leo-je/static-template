@@ -1,9 +1,10 @@
 import { defineComponent, PropType, reactive, watch, ref, onMounted, toRaw } from 'vue';
 import { ElInput, ElTable, ElTableColumn, ElForm, ElFormItem } from 'element-plus';
-import { TableProps } from 'element-plus/lib/el-table/src/table/defaults';
 import { TableColumn, SubListState } from './type';
 import './sublist.css';
 import { SetupContext } from '@vue/runtime-core';
+import { TableProps } from 'element-plus/es/components/table/src/table/defaults';
+import { FormItemProps } from 'ant-design-vue';
 
 /**
  * 深拷贝
@@ -39,7 +40,7 @@ export default defineComponent({
       default: () => Object.assign({}),
     },
     rules: {
-      type: Object as PropType<{ [key: string]: Array<ObjectConstructor> }>,
+      type: Object as PropType<{ [key: string]: Array<FormItemProps> }>,
       default: () => null,
     },
     /**
@@ -122,7 +123,7 @@ export default defineComponent({
     const tableProps = deepCopy(props.tableProps);
 
     const formProps = {
-      size: 'mini',
+      // size: 'small',
       inline: true,
       'inline-message': true,
       'show-message': true,
@@ -155,7 +156,7 @@ export default defineComponent({
                   };
                   return <ElTableColumn v-slots={slots} {...rawColum} />;
                 } else {
-                  return <ElTableColumn {...rawColum} />;
+                  return <El-TableColumn {...rawColum} />;
                 }
               })}
               <ElTableColumn {...this.actionColumnProps} v-slots={this.actionColumnProps.vSlots} />
@@ -276,14 +277,14 @@ function getDefaultEditComponent(): (scope: any, state: SubListState<any>) => JS
   return function (scope, state) {
     return (
       <ElFormItem
-        size="mini"
+        size="small"
         class="sublist-form-item"
         label={scope.column.name}
         prop={scope.column.property}
       >
         <ElInput
           label={scope.column.label}
-          size="mini"
+          size="small"
           v-model={state.editItem[scope.column.property]}
         />
       </ElFormItem>
