@@ -34,6 +34,7 @@ export default defineComponent({
       () => contextState.activeBindDefine,
       () => {
         if (contextState.activeBindDefine) {
+          panelState.shrinkageOff = false;
           panelState.elCollapses = contextState.activeBindDefine.map((groupItem) => groupItem.name);
         }
       },
