@@ -24,7 +24,7 @@ export default defineComponent({
     },
     methods: {
         getBpmnXml(key?: string) {
-            http('post', '/api/process/definition/getBpmnXML?processDefinitionKey=' + key, null).then(data => {
+            http('post', '/api-process/process/definition/getBpmnXML?processDefinitionKey=' + key, null).then(data => {
                 // console.log(data)
                 if (data) {
                     this.getImg(data)

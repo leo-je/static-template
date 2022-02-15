@@ -43,7 +43,7 @@ export default defineComponent({
     getData() {
       // eslint-disable-next-line @typescript-eslint/no-this-alias
       let _this = this;
-      http('post', '/api/process/definition/list').then((data) => {
+      http('post', '/api-process/process/definition/list').then((data) => {
         console.log(data);
         _this.tableData = data;
       });

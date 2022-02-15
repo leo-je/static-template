@@ -54,8 +54,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { Button, ConfigProvider, Table, Form, Modal, Switch, FormItem, Divider, Input } from 'ant-design-vue';
-import { RoleInfo } from '../../interface';
-import http from "../../utils/http";
+import { RoleInfo } from '@/interface';
+import http from "@/utils/http";
 
 // 表头配置
 const columns = [

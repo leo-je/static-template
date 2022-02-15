@@ -66,10 +66,10 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, } from "vue";
-import http from "../../utils/http";
+import http from "@/utils/http";
 import { Divider, Button, Row, Col, Modal, Form, FormItem, Switch, ConfigProvider, Table, Input, DirectoryTree } from "ant-design-vue";
 import moment from "moment";
-import { GroupInfo } from "../../interface";
+import { GroupInfo } from "@/interface";
 // 表头配置
 const columns = [
   {

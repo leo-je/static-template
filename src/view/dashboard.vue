@@ -34,7 +34,7 @@
 import { defineComponent, ref } from 'vue';
 import { message, Layout, LayoutHeader, LayoutFooter, LayoutContent, Menu, LayoutSider } from 'ant-design-vue';
 import { UserOutlined, createFromIconfontCN } from "@ant-design/icons-vue";
-import SubMenu from '../components/SubMenu';
+import SubMenu from '../components/submenu';
 import store from '../store';
 import { RouterInfo } from '../interface';
 

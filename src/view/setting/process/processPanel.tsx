@@ -21,10 +21,12 @@ export default defineComponent({
   methods: {
     getBpmnXml(key?: string) {
       const bpmnContext = BpmnStore;
-      http('post', '/api/process/definition/getBpmnXML?processDefinitionKey=' + key, null).then(data => {
+      http('post', '/api-process/process/definition/getBpmnXML?processDefinitionKey=' + key, null).then(data => {
         console.log(data)
         if (data) {
-          bpmnContext.importXML(data)
+          bpmnContext.importXML(data).then(value=>{
+            bpmnContext.getModeler().get('canvas').zoom('fit-viewport', 'auto');
+          })
         }
       }).catch(err => {
         console.error(err);
@@ -35,7 +37,7 @@ export default defineComponent({
       bpmnContext.getXML()
         .then(resp => {
           if (resp && resp.xml) {
-            http('post', '/api/process/definition/add', { bpmnXml: resp.xml }).then(data => {
+            http('post', '/api-process/process/definition/add', { bpmnXml: resp.xml }).then(data => {
               console.log(data)
               if (data) {
                 ElMessage(data);

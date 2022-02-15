@@ -21,7 +21,7 @@ export default defineComponent({
   mounted() {
     console.log("=================>401");
     // this.$router.push({ path:"",redirect:"http://localhost:8080/config/redirect?url="+"http://localhost:9095/"});
-    location.href= "http://localhost/config/redirect?url=" + "http://localhost/"
+    location.href= `http://${location.host}/config/redirect?url=http://${location.host}/`
   },
   beforeCreate() {
 

@@ -26,7 +26,7 @@ export default defineComponent({
       //活动的数据配置组
       elCollapses: Object.assign([]),
       //panel面板的开关
-      shrinkageOff: false,
+      shrinkageOff: true,
     });
 
     //打开所有抽屉
@@ -71,9 +71,9 @@ export default defineComponent({
               onClick={() => (panelState.shrinkageOff = !panelState.shrinkageOff)}
             >
               {panelState.shrinkageOff ? (
-                <el-icon size={30} ><Expand /></el-icon>
-              ) : (
                 <el-icon size={30} ><List /></el-icon>
+              ) : (
+                <el-icon size={30} ><Expand /></el-icon>
               )}
             </div>
             <div class="bpmn-panel" v-show={!panelState.shrinkageOff}>

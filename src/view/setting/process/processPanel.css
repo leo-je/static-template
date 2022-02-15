@@ -13,6 +13,7 @@ body {
 
 .app-containers {
   height: 100%;
+  position: relative;
 }
 
 .icon {

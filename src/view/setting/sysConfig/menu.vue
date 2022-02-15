@@ -86,10 +86,10 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import http from "../../utils/http";
+import http from "@/utils/http";
 import { Input, Divider, Button, Row, DirectoryTree, Table, Col, Form, FormItem, Modal, Switch, RadioButton, RadioGroup, ConfigProvider } from "ant-design-vue";
 import moment from "moment";
-import { RouterInfo } from "../../interface";
+import { RouterInfo } from "@/interface";
 // 表头配置
 const columns = [
   {

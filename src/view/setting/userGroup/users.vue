@@ -92,11 +92,11 @@
   </section>
 </template>
 <script lang="ts">
-import http from "../../utils/http";
 import moment from "moment";
 import { Row, Select, Input, Table, Col, Form, Modal, FormItem, TreeSelect, DatePicker, RadioButton, RadioGroup, Divider, Button, ConfigProvider } from "ant-design-vue";
 import { defineComponent, ref } from "vue";
-import { MainRoleGroupOptions, mainRoleOptions, UserInfo } from "../../interface";
+import { MainRoleGroupOptions, mainRoleOptions, UserInfo } from "@/interface";
+import http from "@/utils/http";
 // 表头配置
 const columns = [
   {

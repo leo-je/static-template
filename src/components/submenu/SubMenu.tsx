@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import { getRouter, appRouterContext } from "../router";
+import { getRouter, appRouterContext } from "../../router";
 import { SubMenu, MenuItem } from "ant-design-vue";
 
 export default defineComponent({
@@ -13,11 +13,12 @@ export default defineComponent({
   },
   setup(props) {
     const getMenu = (menus?: any[]) => {
-      if(!menus) return<></>
+      if (!menus) return <></>
       // 排除顶级菜单不渲染
       let tagMenus = menus[0].pId == '~' ? menus[0].children : menus;
       return tagMenus.map((item: any) => {
-        console.log(item.path)
+        console.log(item.path + ':' + item.type)
+        if (item?.type == '2') return
         return (
           <>
             {item.children ?

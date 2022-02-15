@@ -8,6 +8,7 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/material.css';
 
 import './bpmn-actions.css';
+import { ModdleElement } from '@/components/process/bpmn/type';
 
 export default defineComponent({
   props: {
@@ -77,6 +78,23 @@ export default defineComponent({
             //   .catch((err: unknown) => {
             //     console.warn(err);
             //   });
+          },
+        },{
+          label: '导出',
+          icon: 'icon-zu1359',
+          action: () => {
+            const rootElement: ModdleElement = bpmnContext
+              .getModeler()
+              .get('canvas')
+              .getRootElement();
+            bpmnContext
+              .getXML()
+              .then((response: { xml: string }) => {
+                download(response.xml, rootElement.id || 'process', 'bpmn');
+              })
+              .catch((err: unknown) => {
+                console.warn(err);
+              });
           },
         },
         {
