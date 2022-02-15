@@ -61,20 +61,28 @@ const router = appRouterContext.routerState.router
 export default router;
 
 export function setRouter(data: RouterInfo[], path?: string) {
-    const router = appRouterContext.routerState.router
-    let tagetData: RouterInfo[] = data.slice(0);
-    let top: RouterInfo[] = []
-    if (tagetData[0].pId == '~') {
-        top = tagetData[0].children?.filter(ch => ch.path === 'top') || []
-        tagetData[0].children = tagetData[0].children?.filter(ch => ch.path != 'top') || []
-        if (top.length >= 1) {
-            tagetData.push(...top[0].children ? top[0].children : [])
+    const router = appRouterContext.routerState.router;
+    let firstPath = '/';
+    let tagetData: RouterInfo[] | null = data.slice(0);
+    let top: RouterInfo | null = null;
+    if (tagetData && tagetData[0].pId == '~') {
+        top = tagetData[0].children?.filter(ch => ch.path === 'top')[0] || null;
+        let children = tagetData[0].children?.filter(ch => ch.path != 'top') || [];
+        if (tagetData && top) {
+            firstPath = children[0].path || firstPath
+            tagetData = [];
+            let tagetData_0 = top.children?.filter(ch => ch.path === '/')[0] || null;
+            if (tagetData_0) {
+                tagetData_0.children = children;
+                tagetData[0] = tagetData_0;
+            }
+            tagetData.push(...top.children || []);
         }
     }
-    let routerInfos = tagetData;
+    console.log(tagetData)
     let routes2: Array<RouteRecordRaw> = []
-    if (routerInfos) {
-        routerInfos.forEach((routerInfo) => {
+    if (tagetData) {
+        tagetData.forEach((routerInfo) => {
             const row = getRow(routerInfo)
             routes2.push(row)
         })
@@ -83,7 +91,7 @@ export function setRouter(data: RouterInfo[], path?: string) {
         router.addRoute(r)
     })
     appRouterContext.routerState.router = router
-    if (path) {
+    if (path && path !== '/') {
         // xxx?dd=xx&ddf=ff
         let paramArr = path.split('?').length > 1 ? path.split('?')[1].split('&') : []
         let query: { [key: string]: any } = {}
@@ -96,7 +104,7 @@ export function setRouter(data: RouterInfo[], path?: string) {
         path = path.split('?')[0]
         router.push({ path, query })
     } else {
-        router.push({ path: '/' })
+        router.push({ path: firstPath })
     }
 
 }
