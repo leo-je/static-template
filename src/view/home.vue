@@ -16,7 +16,7 @@
             mode="inline"
             v-model:selectedKeys="selectedKeys2"
             v-model:openKeys="openKeys"
-            style="height: 100%"
+            style=""
           >
             <SubMenu v-if="menus.length > 0" :menus="menus"></SubMenu>
           </a-menu>
@@ -73,7 +73,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    console.log("dashboard")
+    console.log("home")
     let _this = this;
     store
       .dispatch("LoginByUsername", {})
