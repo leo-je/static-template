@@ -31,7 +31,11 @@ export default defineComponent({
               </> :
               <>
                 <a-menu-item onClick={() => {
-                  appRouterContext.routerState.router.push({ path: item.path })
+                  if (item.type === '3') {
+                      location.href = item.path
+                  } else {
+                    appRouterContext.routerState.router.push({ path: item.path })
+                  }
                 }} >{item.name
                   }</a-menu-item>
               </>

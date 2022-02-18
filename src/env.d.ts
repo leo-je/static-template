@@ -7,6 +7,8 @@ declare module '*.vue' {
   export default component
 }
 
+declare module 'vform3-builds';
+
 declare module '@ant-design/icons-vue';
 
 declare const React: string;
@@ -14,4 +16,9 @@ declare module '*.json';
 declare module '*.png';
 declare module '*.jpg';
 declare module '*.bpmn';
+
+//拓展Window属性
+interface Window {
+  http: any;
+}
 

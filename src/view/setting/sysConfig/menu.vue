@@ -73,6 +73,7 @@
               <a-radio-button value="1">显示</a-radio-button>
               <a-radio-button value="2">隐藏</a-radio-button>
               <a-radio-button value="3">连接</a-radio-button>
+              <a-radio-button value="4">router</a-radio-button>
             </a-radio-group>
           </a-form-item>
 

@@ -7,7 +7,11 @@ const appRouterState = reactive<AppRouterState>({
     router: initRouter(),
     modules: modules
 })
-function getRow(routerInfo: RouterInfo): RouteRecordRaw {
+function getRow(routerInfo: RouterInfo): RouteRecordRaw | null {
+    if (routerInfo.type === '3') {
+        console.log(routerInfo)
+        return null;
+    }
     let view = modules[routerInfo.componentPath ? routerInfo.componentPath.replace("@", "..").replace("src", "..") : "../view/commonView.vue"]
     if (!view) {
         view = modules['../view/commonView.vue']
@@ -20,7 +24,8 @@ function getRow(routerInfo: RouterInfo): RouteRecordRaw {
     if (routerInfo.children != null && routerInfo.children.length > 0) {
         const ch: RouteRecordRaw[] = []
         routerInfo.children.forEach(c => {
-            ch.push(getRow(c))
+            let r = getRow(c);
+            if (r) ch.push(r);
         })
         row.children = ch
     }
@@ -40,7 +45,7 @@ function initRouter() {
         routerInfos.forEach(routerInfo => {
             if (!routerInfo.componentPath) return;
             const row = getRow(routerInfo)
-            routes.push(row)
+            row ? routes.push(row) : null
         })
     }
 
@@ -83,10 +88,11 @@ export function setRouter(data: RouterInfo[], path?: string) {
     let routes2: Array<RouteRecordRaw> = []
     if (tagetData) {
         tagetData.forEach((routerInfo) => {
-            const row = getRow(routerInfo)
-            routes2.push(row)
+            const row = getRow(routerInfo);
+            row ? routes2.push(row) : null;
         })
     }
+    console.log(tagetData)
     routes2.forEach(r => {
         router.addRoute(r)
     })

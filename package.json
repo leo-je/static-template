@@ -17,7 +17,9 @@
     "element-plus": "^2.0.1",
     "highlight.js": "^11.4.0",
     "less": "^4.1.2",
+    "vform3-builds": "^3.0.1",
     "vue": "^3.2.31",
+    "vue-form-create": "^1.2.5",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
