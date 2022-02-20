@@ -1,0 +1,14 @@
+.DayTheme {
+    --body_bg: #ededed;
+    --shadowOne:#cccccc;
+    --shadowTwo:#ffffff;
+    --input_focus:white;
+    --font_color:#333333;
+}
+.NightTheme {
+    --body_bg: #333333;
+    --shadowOne:#2c2c2c;
+    --shadowTwo:#3a3a3a;
+    --input_focus:black;
+    --font_color: rgba(247, 247, 247, 0.79);
+}

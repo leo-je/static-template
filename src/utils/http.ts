@@ -16,7 +16,7 @@ instance.interceptors.request.use(function (config: AxiosRequestConfig) {
 }, function (error: AxiosError) {
     console.log(error);
     // 对请求错误做些什么
-    console.log('请求拦截器报错');
+    console.error(`请求拦截器报错:\npath: ${error.request.path}\ncode:${error.code}\ninfo:${error.message}`);
     return Promise.reject(error);
 });
 
@@ -35,7 +35,7 @@ instance.interceptors.response.use(function (response: AxiosResponse) {
         let router = getRouter();
         router.push({ path: "/401" });
     }
-    console.log('响应拦截器报错');
+    console.error(`响应拦截器报错:\npath: ${error.request.path}\ncode:${error.code}\ninfo:${error.message}`);
     return Promise.reject(error);
 });
 

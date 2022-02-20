@@ -27,6 +27,8 @@ import http from "@/utils/http";
 import { ElMessage } from "element-plus";
 import { defineComponent, ref } from "vue";
 
+import 'vform3-builds/dist/designer.style.css'  //引入VForm样式
+
 export default defineComponent({
 
     setup() {

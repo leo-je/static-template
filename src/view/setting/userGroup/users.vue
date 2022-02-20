@@ -63,11 +63,11 @@
           <a-form-item label="出生日期">
             <a-date-picker format="YYYY-MM-DD" v-model:value="user.birthday" />
           </a-form-item>
-          <a-form-item label="主岗">
+          <a-form-item label="角色">
             <a-row>
               <a-col :span="11">
                 <a-select
-                  placeholder="请选择主岗"
+                  placeholder="请选择角色"
                   v-model:value="user.mainRole.roleId"
                   :options="mainRoleOptions.data"
                 />
