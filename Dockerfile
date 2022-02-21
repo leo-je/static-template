@@ -3,7 +3,13 @@
 # WORKDIR /app
 # RUN npm install && npm run build
  
-FROM nginx:latest
+FROM nginx:stable
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+        && apk update \
+        && apk add --no-cache tzdata dmidecode; cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; echo "Asia/Shanghai" > /etc/timezone
+
+
 RUN mkdir /app && mkdir /etc/nginx/key
 # COPY --from=0 /app/dist /app
 COPY ./dist /app
