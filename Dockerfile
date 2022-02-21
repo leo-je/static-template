@@ -3,7 +3,7 @@
 # WORKDIR /app
 # RUN npm install && npm run build
  
-FROM nginx:stable
+FROM nginx:latest
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
         && apk update \
