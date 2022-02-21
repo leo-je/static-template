@@ -4,7 +4,7 @@ import { getRouter } from '../router';
 //创建axios的一个实例 
 var instance = axios.create({
     //baseURL:'http://127.0.0.1:8080/',//接口统一域名
-    timeout: 6000
+    timeout: 60000
     //设置超时
 })
 instance.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

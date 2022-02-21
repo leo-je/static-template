@@ -72,3 +72,17 @@ export interface RoleInfo {
     statusChecked?: boolean,
     status?: string,
 }
+
+export interface Oauth2Client {
+    accessTokenValidity: number,
+    additionalInformation: any,
+    authorities: any,
+    authorizedGrantTypes: string,
+    autoapprove: string,
+    clientId: string,
+    clientSecretValue: string,
+    refreshTokenValidity: any,
+    resourceIds: any,
+    scope: string,
+    webServerRedirectUri: string,
+}
