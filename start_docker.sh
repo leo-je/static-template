@@ -1,5 +1,5 @@
 #! /bin/bash
-# rm -rf ./dist && npm run build
+rm -rf ./dist && npm run build
 docker stop static
 docker rm static
 docker rmi static:1.0.0
