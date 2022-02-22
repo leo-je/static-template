@@ -16,6 +16,7 @@ const todolist = {
 
                     })
                     state.lists = data
+                    state.finish = state.lists.filter((item: any) => item.checked === true).length
                 }
             })
         },

@@ -1,3 +1,4 @@
+import { CheckboxValueType } from "ant-design-vue/lib/checkbox/Group";
 import { Router } from "vue-router";
 
 export interface AppRouterState {
@@ -85,4 +86,5 @@ export interface Oauth2Client {
     resourceIds: any,
     scope: string,
     webServerRedirectUri: string,
+    authorizedGrantTypesOptionsArray:CheckboxValueType[]
 }

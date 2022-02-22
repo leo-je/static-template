@@ -36,9 +36,16 @@
         :title="wtitle"
         v-model:visible="addEditVisible"
         :confirm-loading="confirmLoading"
+        width="700px"
         @ok="handleOk"
       >
-        <a-form :model="group">
+        <a-form
+          class="editForm"
+          :model="group"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+          labelAlign="left"
+        >
           <a-form-item label="clientId">
             <a-input placeholder="请输入clientId" v-model:value="group.clientId" />
           </a-form-item>
@@ -46,7 +53,10 @@
             <a-input placeholder="请输入clientId" v-model:value="group.accessTokenValidity" />
           </a-form-item>
           <a-form-item label="认证方式">
-            <a-input placeholder="请输入认证方式(逗号分隔)" v-model:value="group.authorizedGrantTypes" />
+            <a-checkbox-group
+              v-model:value="group.authorizedGrantTypesOptionsArray"
+              :options="authorizedGrantTypesOptions"
+            />
           </a-form-item>
           <a-form-item label="是否自动跳转">
             <a-radio-group v-model:value="group.autoapprove">
@@ -60,6 +70,9 @@
           <a-form-item label="scope">
             <a-input placeholder="请输入scope" v-model:value="group.scope" />
           </a-form-item>
+          <a-form-item label="resourceIds">
+            <a-input placeholder="请输入resourceIds(逗号分隔)" v-model:value="group.resourceIds" />
+          </a-form-item>
           <a-form-item label="重定向地址">
             <a-textarea placeholder="请输入重定向地址(逗号分隔)" v-model:value="group.webServerRedirectUri" />
           </a-form-item>
@@ -71,7 +84,10 @@
 <script lang="ts">
 import { defineComponent, ref, } from "vue";
 import http from "@/utils/http";
-import { Divider, Button, Row, Col, Modal, Form, FormItem, Switch, ConfigProvider, Table, Input, DirectoryTree, RadioGroup, RadioButton, Textarea } from "ant-design-vue";
+import {
+  Divider, Button, Row, Col, Modal, Form, FormItem, Switch, ConfigProvider,
+  Table, Input, DirectoryTree, RadioGroup, RadioButton, Textarea, CheckboxGroup
+} from "ant-design-vue";
 import moment from "moment";
 import { Oauth2Client } from "@/interface";
 // 表头配置
@@ -132,11 +148,13 @@ export default defineComponent({
     ARadioGroup: RadioGroup,
     ARadioButton: RadioButton,
     ATextarea: Textarea,
+    ACheckboxGroup: CheckboxGroup,
   },
   setup() {
     const selectedKeys = [""];
     let data: any[] = []
     return {
+      authorizedGrantTypesOptions: ref(['password', 'implicit', 'authorization_code', 'client_credentials', 'refresh_token']),
       wtitle: ref("添加"),
       data: ref([]),
       columns,
@@ -162,6 +180,7 @@ export default defineComponent({
         resourceIds: null,
         scope: "",
         webServerRedirectUri: "",
+        authorizedGrantTypesOptionsArray: []
       }),
     };
   },
@@ -209,7 +228,8 @@ export default defineComponent({
         refreshTokenValidity: undefined,
         resourceIds: undefined,
         scope: "",
-        webServerRedirectUri: ""
+        webServerRedirectUri: "",
+        authorizedGrantTypesOptionsArray: []
       }
       return ob;
     },
@@ -219,6 +239,7 @@ export default defineComponent({
     },
     showWindows: function (title: string, row: Oauth2Client) {
       console.log(row);
+      row.authorizedGrantTypesOptionsArray = row.authorizedGrantTypes?.split(',')
       this.group = row;
       this.wtitle = title;
       this.addEditVisible = true;
@@ -231,6 +252,7 @@ export default defineComponent({
       console.log(this.group);
       this.confirmLoading = true;
       var _this = this;
+      this.group.authorizedGrantTypes = this.group.authorizedGrantTypesOptionsArray?.join(',')
       http("post", "/api-oauth2/oauth2/admin/client/add", this.group)
         .then(function (data) {
           console.log(data);
@@ -265,5 +287,7 @@ td.column-money {
 }
 .group-info-container {
   margin-left: 10px;
+}
+.editForm {
 }
 </style>
