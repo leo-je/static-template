@@ -276,6 +276,8 @@ td.column-money {
 .group-tree-col {
   text-align: left;
   background-color: azure;
+  overflow: auto;
+  max-height: calc(100vh - 200px);;
 }
 .group-info-container {
   margin-left: 10px;

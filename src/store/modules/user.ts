@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+import { delCookie } from "@/utils/cookieUtils";
 import { getRouter } from "../../router";
 import http from "../../utils/http";
 
@@ -40,6 +41,13 @@ const user = {
                     }
                 }
             })
+        },
+        user_logout(context: any) {
+            console.log('user_logout')
+            //GATEWAY-SERVICE-SESSION
+            delCookie('GATEWAY-SERVICE-SESSION')
+            context.state.user = null
+            location.href= `/config/gateway/logout?redirect=${location.protocol}://${location.host}/logout`.replace('::',':')
         }
     }
 }

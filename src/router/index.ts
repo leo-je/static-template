@@ -40,6 +40,11 @@ function initRouter() {
             name: '401',
             componentPath: '../view/401.vue',
         },
+        {
+            path: '/logout',
+            name: 'logout',
+            componentPath: '../view/logout.vue',
+        },
     ]
     if (routerInfos) {
         routerInfos.forEach(routerInfo => {

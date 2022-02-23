@@ -6,22 +6,49 @@
         <span>pm</span>
       </div>
       <div class="userInfo">
-        <span id="nickName">你好,{{ user.nickName }}</span>
+        <!-- <span id="nickName">你好,{{ user.nickName }}</span> -->
+        <div id="nickName">
+          <a-dropdown>
+            <a class="ant-dropdown-link" @click.prevent>
+              你好,{{ user.nickName }}
+              <DownOutlined />
+            </a>
+            <template #overlay>
+              <a-menu @click="item => dropdownMenuHandle(item)">
+                <a-menu-item key="logout">
+                  <a href="javascript:;">注销</a>
+                </a-menu-item>
+                <a-menu-item key="2">
+                  <a href="javascript:;">2nd menu item</a>
+                </a-menu-item>
+                <a-menu-item key="3">
+                  <a href="javascript:;">3rd menu item</a>
+                </a-menu-item>
+              </a-menu>
+            </template>
+          </a-dropdown>
+        </div>
       </div>
     </a-layout-header>
     <a-layout-content style="padding: 0 0px">
       <a-layout style="padding: 24px 0; background: #fff">
-        <a-layout-sider width="200" style="background: #fff">
+        <a-layout-sider
+          width="200"
+          style="background: #fff;max-height: calc(100vh - 200px);
+    overflow: auto;"
+        >
           <a-menu
             mode="inline"
             v-model:selectedKeys="selectedKeys2"
             v-model:openKeys="openKeys"
-            style=""
+            style
           >
             <SubMenu v-if="menus.length > 0" :menus="menus"></SubMenu>
           </a-menu>
         </a-layout-sider>
-        <a-layout-content :style="{ padding: '0 24px', minHeight: '695px' }">
+        <a-layout-content
+          :style="{ padding: '0 24px', minHeight: mainHeight, maxHeight: mainHeight, overflow: 'auto' }"
+        >
           <router-view />
         </a-layout-content>
       </a-layout>
@@ -32,7 +59,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { message, Layout, LayoutHeader, LayoutFooter, LayoutContent, Menu, LayoutSider } from 'ant-design-vue';
+import { message, Layout, LayoutHeader, LayoutFooter, LayoutContent, Menu, LayoutSider, Dropdown, MenuItem } from 'ant-design-vue';
+import { DownOutlined } from '@ant-design/icons-vue';
 import { UserOutlined, createFromIconfontCN } from "@ant-design/icons-vue";
 import SubMenu from '../components/submenu';
 import store from '../store';
@@ -46,6 +74,7 @@ const IconFont = createFromIconfontCN({
 export default defineComponent({
   setup() {
     return {
+      visible: ref(false),
       loading: false,
       selectedKeys1: ["2"],
       selectedKeys2: ["1"],
@@ -53,7 +82,8 @@ export default defineComponent({
       user: ref({
         nickName: "xxx",
       }),
-      menus: ref<RouterInfo[]>([])
+      menus: ref<RouterInfo[]>([]),
+      mainHeight: ref('600px')
     };
   },
   components: {
@@ -65,12 +95,33 @@ export default defineComponent({
     ALayoutFooter: LayoutFooter,
     ALayoutContent: LayoutContent,
     AMenu: Menu,
+    ADropdown: Dropdown,
+    AMenuItem: MenuItem,
     ALayoutSider: LayoutSider,
+    DownOutlined: DownOutlined
   },
   methods: {
+    log(k: any) {
+      console.log(k)
+    },
     to(path: string) {
       this.$router.push({ path });
-    }
+    },
+    updateMainHigth() {
+      let _this = this;
+      let windowHeight = window.innerHeight;//document.body.clientHeight
+      windowHeight = windowHeight - 64 - 70 - 48 - 4
+      if (windowHeight < 400) {
+        windowHeight = 400
+      }
+      _this.mainHeight = windowHeight + 'px'
+    },
+    dropdownMenuHandle(item: any) {
+      console.log(item)
+      if (item.key == 'logout') {
+        store.dispatch('user_logout')
+      }
+    },
   },
   mounted() {
     console.log("home")
@@ -93,6 +144,17 @@ export default defineComponent({
         message.error(e.message);
         this.loading = false;
       });
+    window.onresize = () => {
+      return (() => {
+        let windowHeight = document.body.clientHeight
+        windowHeight = windowHeight - 64 - 70 - 48 - 4
+        if (windowHeight < 400) {
+          windowHeight = 400
+        }
+        _this.mainHeight = windowHeight + 'px'
+      })()
+    }
+    this.updateMainHigth()
   },
   beforeCreate() {
     // this.$router.push({ path: "/" });
@@ -100,7 +162,34 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style scoped lang="less">
+::-webkit-scrollbar-track-piece {
+  //滚动条凹槽的颜色，还可以设置边框属性
+
+  background-color: #f8f8f8;
+}
+
+::-webkit-scrollbar {
+  //滚动条的宽度
+
+  width: 5px;
+
+  height: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  //滚动条的设置
+
+  background-color: rgba(0, 0, 0, 0.85);
+
+  background-clip: padding-box;
+
+  min-height: 28px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  undefinedbackground-color: #bbb;
+}
 #components-layout-demo-top-side .logo {
   text-align: left;
   line-height: 25px;

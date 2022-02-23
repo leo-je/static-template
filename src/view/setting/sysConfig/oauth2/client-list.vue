@@ -17,6 +17,10 @@
               <a>{{ text == "1" ? "启用" : "关闭" }}</a>
             </template>
 
+            <template #webServerRedirectUri="{ text }">
+              <span>{{ text?.length > 30?text.slice(0,30)+'...':text }}</span>
+            </template>
+
             <template #action="{ text: record }">
               <span>
                 <a-divider type="vertical" />
@@ -125,6 +129,7 @@ const columns = [
     title: "重定向地址",
     //className: "column-projetInfo",
     dataIndex: "webServerRedirectUri",
+    slots: { customRender: "webServerRedirectUri" },
   },
   {
     title: "操作",

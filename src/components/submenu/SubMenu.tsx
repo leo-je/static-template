@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import { getRouter, appRouterContext } from "../../router";
+import { appRouterContext } from "../../router";
 import { SubMenu, MenuItem } from "ant-design-vue";
 
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
               <>
                 <a-menu-item onClick={() => {
                   if (item.type === '3') {
-                      location.href = item.path
+                    location.href = item.path
                   } else {
                     appRouterContext.routerState.router.push({ path: item.path })
                   }
