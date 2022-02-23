@@ -45,9 +45,15 @@
         :title="wtitle"
         v-model:visible="addEditVisible"
         :confirm-loading="confirmLoading"
+        width="700px"
         @ok="handleOk"
       >
-        <a-form :model="user">
+        <a-form
+          :model="user"
+          :label-col="{ span: 4 }"
+          :wrapper-col="{ span: 18 }"
+          labelAlign="left"
+        >
           <a-form-item label="用户名称">
             <a-input placeholder="请输入用户名称" v-model:value="user.username" />
           </a-form-item>
@@ -63,7 +69,7 @@
           <a-form-item label="出生日期">
             <a-date-picker format="YYYY-MM-DD" v-model:value="user.birthday" />
           </a-form-item>
-          <a-form-item label="角色">
+          <a-form-item label="主要角色">
             <a-row>
               <a-col :span="11">
                 <a-select
@@ -86,6 +92,81 @@
               </a-col>
             </a-row>
           </a-form-item>
+          <a-form-item label="其他角色">
+            <a-button
+              class="editable-add-btn"
+              style="margin-bottom: 8px"
+              @click="() => {
+                const newData = {
+                  key: (user.roles?.length + '' || '1')
+                };
+                user.roles ? user.roles.push(newData) : (user.roles = [newData])
+              }"
+            >添加</a-button>
+            <a-table bordered :data-source="user.roles" :columns="rolesColumns">
+              <template #roleName="{ text, record }">
+                <div class="editable-cell">
+                  <div v-if="newRoleRow[record.key]" class="editable-cell-input-wrapper">
+                    <a-select
+                      v-model:value="newRoleRow[record.key].roleId"
+                      placeholder="其他角色"
+                      :options="mainRoleOptions.data"
+                    ></a-select>
+                    <check-outlined
+                      class="editable-cell-icon-check"
+                      @click="edit_select_roles_save(record.key)"
+                    />
+                  </div>
+                  <div v-else class="editable-cell-text-wrapper">
+                    {{ text || ' ' }}
+                    <edit-outlined
+                      class="editable-cell-icon"
+                      @click="() => {
+                        let rs = user.roles?.filter(r => { r.key == record.key })
+                        newRoleRow[record.key] = rs && rs.length == 1 ? rs[0] : {}
+                      }"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <template #groupName="{ text, record }">
+                <div class="editable-cell">
+                  <div v-if="newRoleRow[record.key]" class="editable-cell-input-wrapper">
+                    <a-tree-select
+                      v-model:value="newRoleRow[record.key].groupId"
+                      style="width: 100%"
+                      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+                      :tree-data="mainRoleGroupOptions.data"
+                      :replace-fields="mainRoleGroupOptions.replaceFields"
+                      placeholder="请选择组织"
+                      tree-default-expand-all
+                    ></a-tree-select>
+                    <check-outlined
+                      class="editable-cell-icon-check"
+                      @click="edit_select_roles_save(record.key)"
+                    />
+                  </div>
+                  <div v-else class="editable-cell-text-wrapper">
+                    {{ text || ' ' }}
+                    <edit-outlined
+                      class="editable-cell-icon"
+                      @click="() => {
+                        let rs = user.roles?.filter(r => { r.key == record.key })
+                        newRoleRow[record.key] = rs && rs.length == 1 ? rs[0] : {}
+                      }"
+                    />
+                  </div>
+                </div>
+              </template>
+
+              <template #operation="{}">
+                <a-popconfirm v-if="user.roles?.length" title="确认删除?" @confirm="(record) => { }">
+                  <a>删除</a>
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </a-form-item>
         </a-form>
       </a-modal>
     </div>
@@ -93,9 +174,13 @@
 </template>
 <script lang="ts">
 import moment from "moment";
-import { Row, Select, Input, Table, Col, Form, Modal, FormItem, TreeSelect, DatePicker, RadioButton, RadioGroup, Divider, Button, ConfigProvider } from "ant-design-vue";
-import { defineComponent, ref } from "vue";
-import { MainRoleGroupOptions, mainRoleOptions, UserInfo } from "@/interface";
+import {
+  Row, Select, Input, Table, Col, Form, Modal, FormItem, TreeSelect, DatePicker, RadioButton,
+  RadioGroup, Divider, Button, ConfigProvider, Popconfirm
+} from "ant-design-vue";
+import { defineComponent, ref, UnwrapRef, reactive } from "vue";
+import { MainRoleGroupOptions, mainRoleOptions, UserInfo, MainRole } from "@/interface";
+import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
 import http from "@/utils/http";
 // 表头配置
 const columns = [
@@ -137,6 +222,24 @@ const columns = [
   },
 ];
 
+const rolesColumns = [
+  {
+    title: "角色名称",
+    dataIndex: "roleName",
+    slots: { customRender: 'roleName' },
+  },
+  {
+    title: "适用组织",
+    dataIndex: "groupName",
+    slots: { customRender: 'groupName' },
+  },
+  {
+    title: 'operation',
+    dataIndex: 'operation',
+    slots: { customRender: 'operation' },
+  },
+]
+
 export default defineComponent({
   name: "SettingRoles",
   components: {
@@ -155,12 +258,17 @@ export default defineComponent({
     ADivider: Divider,
     AButton: Button,
     AConfigProvider: ConfigProvider,
+    CheckOutlined,
+    EditOutlined,
+    APopconfirm: Popconfirm,
   },
   setup() {
+    const newRoleRow: UnwrapRef<Record<string, MainRole>> = reactive({});
     return {
       wtitle: "添加",
       data: ref([]),
-      columns,
+      columns, // 主列表表头
+      rolesColumns, // 编辑对话框角色列表表头
       addEditVisible: ref(false),
       confirmLoading: ref(false),
       user: ref<UserInfo>(Object.create(null)),
@@ -171,6 +279,7 @@ export default defineComponent({
           key: "id",
         }
       }),
+      newRoleRow,
     };
   },
   mounted() {
@@ -178,6 +287,51 @@ export default defineComponent({
     this.getOptions();
   },
   methods: {
+    edit_select_roles_save(key: string) {
+      console.log(key)
+      let role = this.getRoleInfoFromRoleOptions(this.newRoleRow[key].roleId)
+      if (role) {
+        console.log(role)
+        this.newRoleRow[key].roleName = role.name
+      }
+      let group = this.getGroupFromGroupOptions(this.newRoleRow[key].groupId||'')
+      if (group) {
+        console.log(group)
+        this.newRoleRow[key].groupName = group.name
+      }
+      Object.assign(this.user.roles?.filter(item => key === item.key)[0], this.newRoleRow[key]);
+        delete this.newRoleRow[key];
+
+    },
+    getRoleInfoFromRoleOptions(roleId?: string): any {
+      console.log(this.mainRoleOptions.roles)
+      let roles = this.mainRoleOptions.roles?.filter(item => roleId === item.id)
+      if (roles && roles.length == 1) {
+        return roles[0]
+      }
+      return null
+    },
+    getGroupFromGroupOptions(groupId: string): any {
+      console.log(this.mainRoleGroupOptions.data)
+      let group = this.getGroupFromArray(groupId, this.mainRoleGroupOptions.data)
+      console.log(group)
+      return group
+    },
+    getGroupFromArray(groupId: string, array: []): any {
+      let group = null
+      for (let i = 0; i < array.length; i++) {
+        if (groupId === array[i]["id"]) {
+          return array[i]
+        }
+        if (array[i]["children"]) {
+          group = this.getGroupFromArray(groupId, array[i]["children"])
+          if (group) {
+            return group;
+          }
+        }
+      }
+      return group
+    },
     getOptions() {
       let _this = this;
       // roles
@@ -248,13 +402,26 @@ export default defineComponent({
     editProject: function (row: any) {
       var _this = this;
       http("post", "/api-user/busi/user/info/" + row.id, {})
-        .then(function (data) {
+        .then(function (data: UserInfo) {
           console.log(data);
           let user = data;
           user.birthday = moment(user.birthday).format("YYYY/MM/DD HH:mm:ss");
           if (!user.mainRole) {
             user.mainRole = {};
           }
+          user.roles?.map(role => {
+            role.key = role.roleId
+            let roleOp = _this.getRoleInfoFromRoleOptions(role.roleId)
+            if (roleOp) {
+              role.roleName = roleOp.name
+            }
+
+            let group = _this.getGroupFromGroupOptions(role.groupId||'')
+            if(group){
+               role.groupName = group.name
+            }
+            console.log(role)
+          })
           if (user.status == "1") {
             user.statusChecked = true;
           } else {

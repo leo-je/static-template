@@ -33,12 +33,17 @@ export interface UserInfo {
     statusChecked?: boolean,
     mainRole: MainRole,
     sex?: string,
-    birthday?: any
+    birthday?: any,
+    roles?:Array<MainRole>,
+    status?:string
 }
 
-interface MainRole {
-    roleId: string,
-    groupId: string,
+export interface MainRole {
+    key?:string,
+    roleName?:string,
+    roleId?: string,
+    groupId?: string,
+    groupName?:string,
 }
 
 export interface MainRoleGroupOptions {
@@ -52,9 +57,14 @@ interface ReplaceFields {
     key: string,
 }
 
+interface SelectOption{
+    value?:any,
+    label?:string,
+}
+
 export interface mainRoleOptions {
-    roles?: string,
-    data?: [],
+    roles?: RoleInfo[],
+    data?: SelectOption[],
 }
 
 
