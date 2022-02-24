@@ -35,7 +35,8 @@ export interface UserInfo {
     sex?: string,
     birthday?: any,
     roles?:Array<MainRole>,
-    status?:string
+    status?:string,
+    remark?:string
 }
 
 export interface MainRole {

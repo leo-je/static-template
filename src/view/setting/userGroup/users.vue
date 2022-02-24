@@ -30,13 +30,6 @@
           <a class="onSelect" @click="editProject(record)">编辑</a>
         </span>
       </template>
-      <!-- <template #title="">
-      Header
-      </template>-->
-
-      <!-- <template #footer="">
-      Footer
-      </template>-->
     </a-table>
 
     <!-- 对话框 -->
@@ -103,7 +96,7 @@
                 user.roles ? user.roles.push(newData) : (user.roles = [newData])
               }"
             >添加</a-button>
-            <a-table bordered :data-source="user.roles" :columns="rolesColumns">
+            <a-table bordered :pagination="false" :data-source="user.roles" :columns="rolesColumns">
               <template #roleName="{ text, record }">
                 <div class="editable-cell">
                   <div v-if="newRoleRow[record.key]" class="editable-cell-input-wrapper">
@@ -121,10 +114,7 @@
                     {{ text || ' ' }}
                     <edit-outlined
                       class="editable-cell-icon"
-                      @click="() => {
-                        let rs = user.roles?.filter(r => { r.key == record.key })
-                        newRoleRow[record.key] = rs && rs.length == 1 ? rs[0] : {}
-                      }"
+                      @click="edit_select_roles_edit(record)"
                     />
                   </div>
                 </div>
@@ -152,20 +142,27 @@
                     <edit-outlined
                       class="editable-cell-icon"
                       @click="() => {
-                        let rs = user.roles?.filter(r => { r.key == record.key })
-                        newRoleRow[record.key] = rs && rs.length == 1 ? rs[0] : {}
+                        let rs = user.roles?.filter(r => r.key == record.key)
+                        newRoleRow[record.key] = Object.assign({}, rs && rs.length == 1 ? rs[0] : {})
                       }"
                     />
                   </div>
                 </div>
               </template>
 
-              <template #operation="{}">
-                <a-popconfirm v-if="user.roles?.length" title="确认删除?" @confirm="(record) => { }">
+              <template #operation="{ record }">
+                <a-popconfirm
+                  v-if="user.roles?.length"
+                  title="确认删除?"
+                  @confirm="edit_select_roles_delete(record)"
+                >
                   <a>删除</a>
                 </a-popconfirm>
               </template>
             </a-table>
+          </a-form-item>
+          <a-form-item label="备注信息">
+            <a-textarea v-model:value="user.remark" placeholder="备注信息" :rows="4" />
           </a-form-item>
         </a-form>
       </a-modal>
@@ -176,7 +173,7 @@
 import moment from "moment";
 import {
   Row, Select, Input, Table, Col, Form, Modal, FormItem, TreeSelect, DatePicker, RadioButton,
-  RadioGroup, Divider, Button, ConfigProvider, Popconfirm
+  RadioGroup, Divider, Button, ConfigProvider, Popconfirm,Textarea
 } from "ant-design-vue";
 import { defineComponent, ref, UnwrapRef, reactive } from "vue";
 import { MainRoleGroupOptions, mainRoleOptions, UserInfo, MainRole } from "@/interface";
@@ -261,6 +258,7 @@ export default defineComponent({
     CheckOutlined,
     EditOutlined,
     APopconfirm: Popconfirm,
+    ATextarea:Textarea,
   },
   setup() {
     const newRoleRow: UnwrapRef<Record<string, MainRole>> = reactive({});
@@ -271,7 +269,7 @@ export default defineComponent({
       rolesColumns, // 编辑对话框角色列表表头
       addEditVisible: ref(false),
       confirmLoading: ref(false),
-      user: ref<UserInfo>(Object.create(null)),
+      user: ref<UserInfo>({ mainRole: {} }),
       mainRoleOptions: ref<mainRoleOptions>(Object.create(null)),
       mainRoleGroupOptions: ref<MainRoleGroupOptions>({
         replaceFields: {
@@ -287,24 +285,29 @@ export default defineComponent({
     this.getOptions();
   },
   methods: {
+    edit_select_roles_edit(record: MainRole) {
+      let rs = this.user.roles?.filter(r => r.key == record.key)
+      this.newRoleRow[record.key || ''] = Object.assign({}, rs && rs.length == 1 ? rs[0] : {})
+    },
+    edit_select_roles_delete(record: MainRole) {
+      this.user.roles = this.user.roles?.filter(role => role.key !== record.key)
+
+    },
     edit_select_roles_save(key: string) {
       console.log(key)
       let role = this.getRoleInfoFromRoleOptions(this.newRoleRow[key].roleId)
       if (role) {
-        console.log(role)
         this.newRoleRow[key].roleName = role.name
       }
-      let group = this.getGroupFromGroupOptions(this.newRoleRow[key].groupId||'')
+      let group = this.getGroupFromGroupOptions(this.newRoleRow[key].groupId || '')
       if (group) {
-        console.log(group)
         this.newRoleRow[key].groupName = group.name
       }
       Object.assign(this.user.roles?.filter(item => key === item.key)[0], this.newRoleRow[key]);
-        delete this.newRoleRow[key];
+      delete this.newRoleRow[key];
 
     },
     getRoleInfoFromRoleOptions(roleId?: string): any {
-      console.log(this.mainRoleOptions.roles)
       let roles = this.mainRoleOptions.roles?.filter(item => roleId === item.id)
       if (roles && roles.length == 1) {
         return roles[0]
@@ -312,9 +315,7 @@ export default defineComponent({
       return null
     },
     getGroupFromGroupOptions(groupId: string): any {
-      console.log(this.mainRoleGroupOptions.data)
       let group = this.getGroupFromArray(groupId, this.mainRoleGroupOptions.data)
-      console.log(group)
       return group
     },
     getGroupFromArray(groupId: string, array: []): any {
@@ -405,20 +406,21 @@ export default defineComponent({
         .then(function (data: UserInfo) {
           console.log(data);
           let user = data;
+          console.log()
           user.birthday = moment(user.birthday).format("YYYY/MM/DD HH:mm:ss");
           if (!user.mainRole) {
             user.mainRole = {};
           }
           user.roles?.map(role => {
-            role.key = role.roleId
+            role.key = role.roleId + '' + role.groupId
             let roleOp = _this.getRoleInfoFromRoleOptions(role.roleId)
             if (roleOp) {
               role.roleName = roleOp.name
             }
 
-            let group = _this.getGroupFromGroupOptions(role.groupId||'')
-            if(group){
-               role.groupName = group.name
+            let group = _this.getGroupFromGroupOptions(role.groupId || '')
+            if (group) {
+              role.groupName = group.name
             }
             console.log(role)
           })
