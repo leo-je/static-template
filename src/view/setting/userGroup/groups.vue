@@ -143,8 +143,8 @@ export default defineComponent({
         .then(function (data: any) {
           console.log(_this.treeData);
           console.log(data);
-          if (data != null) {
-            _this.treeData.data = [Object.assign({}, data)];
+          if (data != null && data.data) {
+            _this.treeData.data = [Object.assign({}, data.data)];
             if (!_this.treeData.selectedKeys) {
               _this.treeData.selectedKeys = [data.id];
             }
