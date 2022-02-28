@@ -1,6 +1,8 @@
 import { reactive } from "vue";
 import { createRouter, createWebHistory, Router, RouteRecordRaw } from "vue-router";
 import { AppRouter, AppRouterState, RouterInfo } from "../interface";
+import notAuthTopRouter from './noAuthTopRouter'
+
 const modules = import.meta.glob('../**/*.(vue|tsx)')
 
 const appRouterState = reactive<AppRouterState>({
@@ -34,18 +36,7 @@ function getRow(routerInfo: RouterInfo): RouteRecordRaw | null {
 
 function initRouter() {
     const routes: Array<RouteRecordRaw> = []
-    const routerInfos: Array<RouterInfo> = [
-        {
-            path: '/401',
-            name: '401',
-            componentPath: '../view/401.vue',
-        },
-        {
-            path: '/logout',
-            name: 'logout',
-            componentPath: '../view/logout.vue',
-        },
-    ]
+    const routerInfos: Array<RouterInfo> = notAuthTopRouter
     if (routerInfos) {
         routerInfos.forEach(routerInfo => {
             if (!routerInfo.componentPath) return;
