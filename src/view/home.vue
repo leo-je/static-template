@@ -102,7 +102,7 @@ export default defineComponent({
   },
   methods: {
     log(k: any) {
-      console.log(k)
+      // console.log(k)
     },
     to(path: string) {
       this.$router.push({ path });
@@ -117,14 +117,14 @@ export default defineComponent({
       _this.mainHeight = windowHeight + 'px'
     },
     dropdownMenuHandle(item: any) {
-      console.log(item)
+      // console.log(item)
       if (item.key == 'logout') {
         store.dispatch('user_logout')
       }
     },
   },
   mounted() {
-    console.log("home")
+    // console.log("home")
     let _this = this;
     store
       .dispatch("LoginByUsername", {})
@@ -132,15 +132,15 @@ export default defineComponent({
         this.user = Object.assign(this.user, data);
         return store.dispatch("LoadMenu", { id: "0" });
       }).then((data: any) => {
-        console.log("============LoginByUsername==========>", data)
+        // console.log("============LoginByUsername==========>", data)
         if (data) {
           let menus = [data]
-          console.log("===========LoginByUsername===========>", menus)
+          // console.log("===========LoginByUsername===========>", menus)
           _this.menus = (menus);
         }
       })
       .catch((e: Error) => {
-        console.error("dash", e);
+        // console.error("dash", e);
         message.error(e.message);
         this.loading = false;
       });

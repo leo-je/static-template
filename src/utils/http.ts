@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { getRouter } from '../router';
+import { error } from './logUtils';
 
 //创建axios的一个实例 
 var instance = axios.create({
@@ -13,10 +14,9 @@ instance.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 instance.interceptors.request.use(function (config: AxiosRequestConfig) {
     //console.log(config);
     return config;
-}, function (error: AxiosError) {
-    console.log(error);
+}, function (err: AxiosError) {
     // 对请求错误做些什么
-    console.error(`请求拦截器报错:\npath: ${error.request.path}\ncode:${error.code}\ninfo:${error.message}`);
+    error(`请求拦截器报错:\npath: ${err.request.path}\ncode:${err.code}\ninfo:${err.message}`);
     return Promise.reject(error);
 });
 
@@ -24,9 +24,9 @@ instance.interceptors.request.use(function (config: AxiosRequestConfig) {
 instance.interceptors.response.use(function (response: AxiosResponse) {
     //console.log(response);
     return response.data;
-}, function (error: AxiosError) {
+}, function (err: AxiosError) {
     // 对响应错误
-    if (error && error.response && (error.response.status == 401 || error.response.status == 403)) {
+    if (err && err.response && (err.response.status == 401 || err.response.status == 403)) {
         // router.replace({
         //     path: '/'
         // })
@@ -35,7 +35,7 @@ instance.interceptors.response.use(function (response: AxiosResponse) {
         let router = getRouter();
         router.push({ path: "/401" });
     }
-    console.error(`响应拦截器报错:\npath: ${error.request.path}\ncode:${error.code}\ninfo:${error.message}`);
+    error(`响应拦截器报错:\npath: ${err.request.path}\ncode:${err.code}\ninfo:${err.message}`);
     return Promise.reject(error);
 });
 
@@ -58,7 +58,7 @@ export default function (method: string, url: string, data?: any): Promise<any> 
     } else if (method == 'put') {
         return instance.put(url, data)
     } else {
-        console.error('未知的method' + method)
+        error('未知的method' + method)
         throw new Error('未知的method');
     }
 }

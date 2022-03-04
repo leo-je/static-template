@@ -11,7 +11,7 @@ const appRouterState = reactive<AppRouterState>({
 })
 function getRow(routerInfo: RouterInfo): RouteRecordRaw | null {
     if (routerInfo.type === '3') {
-        console.log(routerInfo)
+        // console.log(routerInfo)
         return null;
     }
     let view = modules[routerInfo.componentPath ? routerInfo.componentPath.replace("@", "..").replace("src", "..") : "../view/commonView.vue"]
@@ -80,7 +80,7 @@ export function setRouter(data: RouterInfo[], path?: string) {
             tagetData.push(...top.children || []);
         }
     }
-    console.log(tagetData)
+    // console.log(tagetData)
     let routes2: Array<RouteRecordRaw> = []
     if (tagetData) {
         tagetData.forEach((routerInfo) => {
@@ -88,7 +88,7 @@ export function setRouter(data: RouterInfo[], path?: string) {
             row ? routes2.push(row) : null;
         })
     }
-    console.log(tagetData)
+    // console.log(tagetData)
     routes2.forEach(r => {
         router.addRoute(r)
     })

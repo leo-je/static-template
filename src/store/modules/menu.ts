@@ -1,5 +1,6 @@
 /* jshint esversion: 6 */
 import http from "@/utils/http";
+import { error, log } from "@/utils/logUtils";
 const menu = {
     state: {
         menu: undefined
@@ -14,11 +15,11 @@ const menu = {
                 } else {
                     http("get", "/api-user/busi/menu/valid/tree",prama)
                         .then(data => {
-                            console.log("menu store", data);
+                            log("menu store", data);
                             context.state.menu = Object.assign({}, data)
                             resolve(context.state.menu)
                         }).catch(e => {
-                            console.error("==============>", e);
+                            error("==============>", e);
                             reject(e)
                         });
                 }
